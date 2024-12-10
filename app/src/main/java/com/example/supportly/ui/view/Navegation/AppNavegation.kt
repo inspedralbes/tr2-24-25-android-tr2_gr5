@@ -47,7 +47,7 @@ fun AppNavigation() {
 
         composable("menu") {
             navController.navigate("menuapp")
-        }
+        }//canvis i començament de branca
     }
 }
 
