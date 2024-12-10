@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="32dp">
+
+    <!-- Titulo -->
+    <TextView
+        android:id="@+id/tvLoginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:text="Mentoría"
+        android:textColor="@android:color/black"
+        android:textSize="24sp" />
+
+    <!-- Campo de texto para el usuario -->
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvLoginTitle"
+        android:layout_marginBottom="16dp"
+        android:hint="Nom d'usuari"
+        android:inputType="text"
+        android:padding="12dp" />
+
+    <!-- Campo de texto para la contraseña -->
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etUsername"
+        android:layout_marginBottom="32dp"
+        android:hint="Contrasenya"
+        android:inputType="textPassword"
+        android:padding="12dp" />
+    <!-- Botón de Login -->
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etPassword"
+        android:layout_marginTop="118dp"
+        android:background="#252525"
+        android:padding="12dp"
+        android:text="Iniciar sesión"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/btnLogin3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etPassword"
+        android:layout_marginTop="221dp"
+        android:padding="12dp"
+        android:text="@string/no_tens_compte_dona_t_d_alta"
+        android:textColor="#252525" />
+
+</RelativeLayout>
