@@ -28,10 +28,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 
 @Composable
-fun Login() {
+fun Login(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -98,7 +99,9 @@ fun Login() {
         // Botón de inicio de sesión
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button(
-                onClick = { /* Lógica para iniciar sesión */ },
+                onClick = {
+                    navController.navigate("menu") // Navegar a la pantalla "menu"
+                },
                 colors = ButtonDefaults.buttonColors(Color.Blue),
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
@@ -110,8 +113,3 @@ fun Login() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewLogin() {
-    Login()
-}

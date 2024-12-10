@@ -16,7 +16,7 @@ import com.example.supportly.ui.view.TipusRegister
 fun AppNavigation() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "mainpage") {
+    NavHost(navController = navController, startDestination = "mainPage") {
         composable("mainPage") {
             MainPage(
                 onNavigateToLogin = {
@@ -29,8 +29,9 @@ fun AppNavigation() {
         }
 
         composable("login") {
-            Login()
+            Login(navController = navController)
         }
+
         composable("selectRegister") {
             TipusRegister(
                 onNavigateToResgister = {
@@ -38,13 +39,18 @@ fun AppNavigation() {
                 }
             )
         }
+
         composable("Register") {
             RegisterMentor()
             RegisterAlumne()
         }
 
+        composable("menu") {
+            navController.navigate("menuapp")
+        }
     }
 }
+
 
 
 
