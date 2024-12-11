@@ -9,7 +9,8 @@ import com.example.supportly.ui.view.MainPage
 import com.example.supportly.ui.view.RegisterAlumne
 import com.example.supportly.ui.view.RegisterMentor
 import com.example.supportly.ui.view.TipusRegister
-
+import androidx.compose.foundation.layout.*
+import com.example.supportly.ui.view.Menuapp
 
 
 @Composable
@@ -41,16 +42,17 @@ fun AppNavigation() {
         }
 
         composable("Register") {
-            RegisterMentor()
-            RegisterAlumne()
+            Column {
+                RegisterMentor()
+                RegisterAlumne()
+            }
         }
 
-        composable("menu") {
-            navController.navigate("menuapp")
-        }//canvis i
+        composable("menuapp") {
+            Menuapp()
+        }
     }
 }
-
 
 
 

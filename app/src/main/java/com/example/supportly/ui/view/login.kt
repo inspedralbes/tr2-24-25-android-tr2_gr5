@@ -100,7 +100,7 @@ fun Login(navController: NavController) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button(
                 onClick = {
-                    navController.navigate("menu") // Navegar a la pantalla "menu"
+                    navController.navigate("menuapp") // Navegar a la pantalla "menu"
                 },
                 colors = ButtonDefaults.buttonColors(Color.Blue),
                 modifier = Modifier

@@ -69,7 +69,7 @@ fun MainPage(
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        // Botón Iniciar sesión x
+        // Botón Iniciar sesión
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = "¿Ya tienes cuenta?",
