@@ -17,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.*
+import com.example.supportly.network.RetrofitInstance
+import com.example.supportly.model.PeticioResponse
 
 @Composable
 fun Menuapp() {
@@ -64,25 +66,56 @@ fun Menuapp() {
                 }
             }
         }
-    ) { innerPadding ->
+    ) {
         NavHost(navController = navController, startDestination = "pantallaInicio") {
-            composable("pantallaInicio") { /*Pantalla Inicio content*/ }
+            composable("pantallaInicio") { MenuScreen() }
             composable("estadistiques") { /*Estadistiques content*/ }
-            composable("peticio") { /*Petició content*/ }
+            composable("peticio"){ }
         }
 
         Column(
             modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(it) // Aquí es donde se usa 'it', que es 'innerPadding'
+                .padding(top = 16.dp), // Asegura espacio arriba de la pantalla
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             when (selectedItem) {
-                0 -> Text(text = "Pantalla Inicio", style = MaterialTheme.typography.bodyLarge)
+                0 -> MenuScreen()
                 1 -> Text(text = "Estadistiques", style = MaterialTheme.typography.bodyLarge)
                 2 -> Text(text = "Petició", style = MaterialTheme.typography.bodyLarge)
             }
         }
     }
 }
+
+@Composable
+fun MenuScreen() {
+    val api = RetrofitInstance.api
+    var peticioResponse by remember { mutableStateOf(PeticioResponse(emptyList())) }
+
+    LaunchedEffect(Unit) {
+        try {
+            val response = api.getpeticio().execute()
+            if (response.isSuccessful) {
+                peticioResponse = response.body() ?: PeticioResponse(emptyList())
+            } else {
+                println("Error en la respuesta: ${response.errorBody()}")
+            }
+        } catch (e: Exception) {
+            println("Error de red: ${e.message}")
+        }
+    }
+
+    if (peticioResponse.peticions.isNotEmpty()) {
+        Text(text = "Petició Detalls:", style = MaterialTheme.typography.bodyLarge)
+        peticioResponse.peticions.forEach { peticio ->
+            Text(text = "${peticio.nom_Peticio}: ${peticio.descripcio}")
+        }
+    } else {
+        Text(text = "No hay peticiones disponibles.")
+    }
+
+}
+

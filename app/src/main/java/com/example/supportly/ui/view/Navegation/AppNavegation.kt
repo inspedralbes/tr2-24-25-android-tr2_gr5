@@ -1,5 +1,4 @@
 package com.example.supportly.ui.view.Navegation
-//ceració dev
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
