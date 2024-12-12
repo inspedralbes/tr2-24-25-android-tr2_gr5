@@ -37,12 +37,12 @@ fun MentorRatingsScreen() {
             )
         }
 
-        // Título
+        // Títuloddds
         Text(
             text = "VALORACIONS DE MENTOR",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
+            //textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
