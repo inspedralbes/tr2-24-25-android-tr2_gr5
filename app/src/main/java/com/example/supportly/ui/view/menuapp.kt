@@ -1,5 +1,6 @@
 package com.example.supportly.ui.view
-
+import android.telecom.Call
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -19,6 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.*
 import com.example.supportly.network.RetrofitInstance
 import com.example.supportly.model.PeticioResponse
+import okhttp3.Response
+import retrofit2.Callback
 
 @Composable
 fun Menuapp() {
@@ -68,7 +71,7 @@ fun Menuapp() {
         }
     ) {
         NavHost(navController = navController, startDestination = "pantallaInicio") {
-            composable("pantallaInicio") { MenuScreen() }
+            composable("pantallaInicio") { /*MenuScreen()*/ }
             composable("estadistiques") { /*Estadistiques content*/ }
             composable("peticio"){ }
         }
@@ -82,14 +85,14 @@ fun Menuapp() {
             verticalArrangement = Arrangement.Center
         ) {
             when (selectedItem) {
-                0 -> MenuScreen()
+                /*0 -> MenuScreen()*/
                 1 -> Text(text = "Estadistiques", style = MaterialTheme.typography.bodyLarge)
                 2 -> Text(text = "Petició", style = MaterialTheme.typography.bodyLarge)
             }
         }
     }
 }
-
+/*
 @Composable
 fun MenuScreen() {
     val api = RetrofitInstance.api
@@ -97,25 +100,33 @@ fun MenuScreen() {
 
     LaunchedEffect(Unit) {
         try {
-            val response = api.getpeticio().execute()
-            if (response.isSuccessful) {
-                peticioResponse = response.body() ?: PeticioResponse(emptyList())
-            } else {
-                println("Error en la respuesta: ${response.errorBody()}")
-            }
+            api.getpeticio().enqueue(object : Callback<PeticioResponse> {
+                override fun onResponse(call: Call<PeticioResponse>, response: Response<PeticioResponse>) {
+                    if (response.isSuccessful) {
+                        peticioResponse = response.body() ?: PeticioResponse(emptyList())
+                    } else {
+                        Log.e("MenuScreen", "Error en la respuesta: ${response.errorBody()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<PeticioResponse>, t: Throwable) {
+                    Log.e("MenuScreen", "Error de red: ${t.message}")
+                }
+            })
         } catch (e: Exception) {
-            println("Error de red: ${e.message}")
+            Log.e("MenuScreen", "Error de red: ${e.message}")
         }
     }
 
     if (peticioResponse.peticions.isNotEmpty()) {
         Text(text = "Petició Detalls:", style = MaterialTheme.typography.bodyLarge)
-        peticioResponse.peticions.forEach { peticio ->
-            Text(text = "${peticio.nom_Peticio}: ${peticio.descripcio}")
+        peticioResponse.peticions.forEach { peticion ->
+            Text(text = "${peticion.nom_Peticio}: ${peticion.descripcio}")
         }
     } else {
         Text(text = "No hay peticiones disponibles.")
     }
-
 }
+*/
+
 
