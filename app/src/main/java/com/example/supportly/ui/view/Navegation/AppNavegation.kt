@@ -35,23 +35,28 @@ fun AppNavigation() {
 
         composable("selectRegister") {
             TipusRegister(
-                onNavigateToResgister = {
-                    navController.navigate("Register")
+                onNavigateToResgister = { userType ->
+                    when (userType) {
+                        "Mentor" -> navController.navigate("registerMentor")
+                        "Alumne" -> navController.navigate("registerAlumne")
+                    }
                 }
             )
         }
 
-        composable("Register") {
-            Column {
-                RegisterMentor()
-                RegisterAlumne()
-            }
+        composable("registerMentor") {
+            RegisterMentor()
+        }
+
+        composable("registerAlumne") {
+            RegisterAlumne()
         }
 
         composable("menuapp") {
             Menuapp()
         }
     }
+
 }
 
 
