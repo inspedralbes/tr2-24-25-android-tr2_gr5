@@ -66,6 +66,13 @@ dependencies {
     implementation (libs.converter.scalars)
     implementation ("androidx.compose.material:material:1.5.1")
     implementation ("androidx.compose.material3:material3:1.2.0")
+
+    implementation ("androidx.compose.ui:ui:1.5.0")
+    implementation ("androidx.compose.material:material:1.5.0")
+    implementation ("androidx.compose.ui:ui-tooling-preview:1.5.0")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

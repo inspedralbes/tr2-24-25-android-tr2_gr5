@@ -1,109 +1,97 @@
 package com.example.supportly.ui.view
 
-
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
 import com.example.supportly.R
-
 
 @Composable
 fun ProfileScreen() {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Perfil") },
+                title = { Text("") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Acción de retroceder */ }) {
-                        Icon(painter = painterResource(id = R.drawable.ic_back_arrow), contentDescription = "Retroceder")
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_back_arrow),
+                            contentDescription = "Volver"
+                        )
                     }
-                }
+                },
+                actions = {
+                    IconButton(onClick = { }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_person),
+                            contentDescription = "Menú"
+                        )
+                    }
+                },
+                backgroundColor = Color.White,
+                elevation = 4.dp
             )
-        },
-        content = {
-            Column(
+
+
+     { // Agrega un bloque lambda aquí
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            // Imagen del perfil
+            Image(
+                painter = painterResource(id = R.drawable.ic_person), // Reemplaza con tu drawable
+                contentDescription = "Foto de perfil",
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .size(100.dp)
+                    .padding(8.dp)
+            )
+
+            // Nombre del usuario
+            Text(
+                text = "Nom d'Usuari",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Información del usuario
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.Start
             ) {
+                Text(text = "Contrasenya:", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(text = "Correu:", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(text = "Descripció:", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            }
 
+            Spacer(modifier = Modifier.height(32.dp))
 
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_person),
-                    contentDescription = "Icono de usuario",
-                    modifier = Modifier.size(100.dp)
-                )
-
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-
-                // Nombre de usuario
-                Text(
-                    text = "Nombre de Usuario",
-                    style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                )
-
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-
-                // Campos de información del perfil
-                ProfileInputField(label = "Contraseña")
-                Spacer(modifier = Modifier.height(8.dp))
-                ProfileInputField(label = "Correo Electrónico")
-                Spacer(modifier = Modifier.height(8.dp))
-                ProfileInputField(label = "Descripción")
-
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-
-                // Botón de historial de incidencias
-                Button(
-                    onClick = { /* Acción al pulsar el botón */ },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    shape = MaterialTheme.shapes.medium,
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray)
-                ) {
-                    Text(text = "Historial de Incidencias", color = Color.White)
-                }
+            // Botón de historial
+            Button(
+                onClick = { /* Acción para ver historial */ },
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .height(48.dp)
+            ) {
+                Text(text = "Historial d'incidencies", fontSize = 16.sp)
             }
         }
-    )
-}
-
-
-@Composable
-fun ProfileInputField(label: String) {
-    Column(
-        horizontalAlignment = Alignment.Start,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(text = label, style = MaterialTheme.typography.bodyMedium)
-        OutlinedTextField(
-            value = "",
-            onValueChange = { /* Acción de cambio */ },
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewProfileScreen() {
-    ProfileScreen()
-}
-
