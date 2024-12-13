@@ -45,11 +45,11 @@ fun AppNavigation() {
         }
 
         composable("registerMentor") {
-            RegisterMentor()
+            RegisterMentor(navController = navController)
         }
 
         composable("registerAlumne") {
-            RegisterAlumne()
+            RegisterAlumne(navController = navController)
         }
 
         composable("menuapp") {

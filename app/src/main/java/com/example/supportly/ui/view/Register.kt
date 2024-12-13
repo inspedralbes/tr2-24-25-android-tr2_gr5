@@ -27,10 +27,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 //FORMULARIO DE REGISTRO DE MENTOR
 @Composable
-fun RegisterMentor() {
+fun RegisterMentor(navController: NavController) {
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -105,7 +106,7 @@ fun RegisterMentor() {
 
         // Botón de Registro
         Button(
-            onClick = { /* Acción de registro */ },
+            onClick = { navController.navigate("menuapp")},
             colors = ButtonDefaults.buttonColors(Color.Blue),
             modifier = Modifier
                 .fillMaxWidth()
@@ -120,7 +121,7 @@ fun RegisterMentor() {
 
 //HACER EL FORMULARIO DE REGISTRO DE ALUMNE
 @Composable
-fun RegisterAlumne() {
+fun RegisterAlumne(navController: NavController) {
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -196,7 +197,7 @@ fun RegisterAlumne() {
 
         // Botón de Registro
         Button(
-            onClick = { /* Acción de registro */ },
+            onClick = { navController.navigate("menuapp") },
             colors = ButtonDefaults.buttonColors(Color.Blue),
             modifier = Modifier
                 .fillMaxWidth()
