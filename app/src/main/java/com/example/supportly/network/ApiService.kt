@@ -8,7 +8,7 @@ import retrofit2.Call
 
 
 object RetrofitInstance {
-     private const val BASE_URL = "http://10.0.2.2:3010/"
+     private const val BASE_URL = "http://10.0.2.2:3010"
 
     private val retrofit by lazy {
         Retrofit.Builder()
@@ -24,5 +24,5 @@ object RetrofitInstance {
 
 interface Mentoria {
     @GET("peticion")
-    fun getpeticio(): Call<PeticioResponse>
+    suspend fun getPeticio(): Call<PeticioResponse>
 }

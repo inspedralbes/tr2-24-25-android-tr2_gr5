@@ -4,7 +4,8 @@ data class PeticioResponse(
     val peticions: List<Peticion>
 )
 
+
 data class Peticion(
-    val nom_Peticio: String,
+    val nom_peticio: String,
     val descripcio: String
 )

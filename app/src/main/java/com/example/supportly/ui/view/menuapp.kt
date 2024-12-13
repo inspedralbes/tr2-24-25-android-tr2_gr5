@@ -18,10 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.*
-import com.example.supportly.network.RetrofitInstance
 import com.example.supportly.model.PeticioResponse
-import okhttp3.Response
-import retrofit2.Callback
+import com.example.supportly.network.RetrofitInstance
+import com.example.supportly.network.RetrofitInstance.api
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun Menuapp() {
@@ -71,7 +73,7 @@ fun Menuapp() {
         }
     ) {
         NavHost(navController = navController, startDestination = "pantallaInicio") {
-            composable("pantallaInicio") { /*MenuScreen()*/ }
+            composable("pantallaInicio") { MenuScreen() }
             composable("estadistiques") { /*Estadistiques content*/ }
             composable("peticio"){ }
         }
@@ -79,54 +81,60 @@ fun Menuapp() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it) // Aquí es donde se usa 'it', que es 'innerPadding'
-                .padding(top = 16.dp), // Asegura espacio arriba de la pantalla
+                .padding(it)
+                .padding(top = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             when (selectedItem) {
-                /*0 -> MenuScreen()*/
+                0 -> MenuScreen()
                 1 -> Text(text = "Estadistiques", style = MaterialTheme.typography.bodyLarge)
                 2 -> Text(text = "Petició", style = MaterialTheme.typography.bodyLarge)
             }
         }
     }
 }
-/*
+
 @Composable
 fun MenuScreen() {
-    val api = RetrofitInstance.api
     var peticioResponse by remember { mutableStateOf(PeticioResponse(emptyList())) }
+    var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         try {
-            api.getpeticio().enqueue(object : Callback<PeticioResponse> {
-                override fun onResponse(call: Call<PeticioResponse>, response: Response<PeticioResponse>) {
-                    if (response.isSuccessful) {
-                        peticioResponse = response.body() ?: PeticioResponse(emptyList())
-                    } else {
-                        Log.e("MenuScreen", "Error en la respuesta: ${response.errorBody()}")
-                    }
-                }
-
-                override fun onFailure(call: Call<PeticioResponse>, t: Throwable) {
-                    Log.e("MenuScreen", "Error de red: ${t.message}")
-                }
-            })
+            val response = api.getPeticio().execute()
+            if (response.isSuccessful) {
+                peticioResponse = response.body() ?: PeticioResponse(emptyList())
+            } else {
+                errorMessage = response.errorBody()?.string()
+            }
         } catch (e: Exception) {
-            Log.e("MenuScreen", "Error de red: ${e.message}")
+            errorMessage = e.message
+        } finally {
+            isLoading = false
         }
     }
 
-    if (peticioResponse.peticions.isNotEmpty()) {
+    if (isLoading) {
+        CircularProgressIndicator()
+    } else if (!errorMessage.isNullOrEmpty()) {
+        Text(text = "Error: $errorMessage", color = Color.Red)
+    } else if (peticioResponse.peticions.isNotEmpty()) {
         Text(text = "Petició Detalls:", style = MaterialTheme.typography.bodyLarge)
-        peticioResponse.peticions.forEach { peticion ->
-            Text(text = "${peticion.nom_Peticio}: ${peticion.descripcio}")
+        peticioResponse.peticions.forEach { peticio ->
+            Text(text = "${peticio.nom_peticio}: ${peticio.descripcio}")
         }
     } else {
         Text(text = "No hay peticiones disponibles.")
     }
+
 }
-*/
+
+
+
+
+
+
 
 

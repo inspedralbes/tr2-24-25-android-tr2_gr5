@@ -50,8 +50,7 @@ android {
 }
 
 dependencies {
-    implementation ("androidx.navigation:navigation-compose:2.7.3")
-
+    implementation (libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -64,8 +63,9 @@ dependencies {
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation (libs.converter.scalars)
-    implementation ("androidx.compose.material:material:1.5.1")
-    implementation ("androidx.compose.material3:material3:1.2.0")
+    implementation (libs.androidx.material)
+    implementation (libs.material3)
+    implementation(libs.cronet.embedded)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
