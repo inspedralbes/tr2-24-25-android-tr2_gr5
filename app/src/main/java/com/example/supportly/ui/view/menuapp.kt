@@ -1,7 +1,10 @@
 package com.example.supportly.ui.view
 import android.telecom.Call
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
@@ -12,14 +15,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import com.example.supportly.ui.theme.DeepNavy
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
 import androidx.navigation.compose.*
+import com.android.car.ui.toolbar.MenuItem
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.network.RetrofitInstance
+import com.example.supportly.network.RetrofitInstance.api
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okio.IOException
 
 @Composable
@@ -74,7 +84,7 @@ fun Menuapp() {
             startDestination = "pantallaInicio",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("pantallaInicio") { MenuScreen() }
+            composable("pantallaInicio") { MenuScreen(navController) }
             composable("estadistiques") {}
             composable("peticio") {}
         }
@@ -82,63 +92,60 @@ fun Menuapp() {
 }
 
 @Composable
-fun MenuScreen() {
-    val api = RetrofitInstance.api
-    var peticioResponse by remember { mutableStateOf(PeticioResponse(emptyList())) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+fun MenuScreen(navController: NavController) {
+    var peticioResponseList: MutableList<PeticioResponse> by remember { mutableStateOf(mutableListOf()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = Unit) {
         try {
-            val response = api.peticion().execute()
-            if (response.isSuccessful) {
-                println("hola")
-                response.body()?.let {
-                    peticioResponse = it
-                } ?: run {
-                    errorMessage = "La respuesta está vacía o no contiene peticiones."
-                }
-            } else {
-                errorMessage = "Error en la respuesta: ${response.errorBody()?.string()}"
+            val response: List<PeticioResponse> = withContext(Dispatchers.IO) {
+                api.peticion().execute().body() ?: emptyList()
             }
+            peticioResponseList.clear()
+            peticioResponseList.addAll(response)
+            isLoading = false
         } catch (e: IOException) {
-            errorMessage = "Error de red: ${e.message}"
+            error = "Error de red: ${e.message}"
+            isLoading = false
         } catch (e: Exception) {
-            errorMessage = "Ocurrió un error inesperado: ${e.message}"
+            error = "Error inesperado: ${e.message}"
+            isLoading = false
         }
     }
 
-    if (errorMessage != null) {
-        Text(
-            text = errorMessage!!,
-            modifier = Modifier.fillMaxSize(),
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.Red
-        )
-    } else if (peticioResponse.peticions.isNotEmpty()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Petició Detalls:",
-                style = MaterialTheme.typography.headlineSmall
-            )
-            peticioResponse.peticions.forEach { peticio ->
-                Text(text = "${peticio.nom_peticio}: ${peticio.descripcio}")
+    if (isLoading) {
+        CircularProgressIndicator()
+    } else if (error != null) {
+        Text("Error: $error")
+    }
+    else {
+        // Mostrar la lista de elementos
+        LazyColumn {
+            items(peticioResponseList) { item ->
+                MenuItem(item) {
+                    // Acción al hacer clic en un elemento
+                    navController.navigate("detalles/${item.nom_peticio}")
+                }
             }
         }
-    } else {
-        Text(
-            text = "No hay peticiones disponibles.",
-            modifier = Modifier.fillMaxSize(),
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.Gray
-        )
     }
 }
-
+@Composable
+fun MenuItem(item: PeticioResponse, onClick: () -> Unit) {
+    // Diseño del elemento de la lista
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onClick() },
+        elevation = 2.dp
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = item.nom_peticio, style = MaterialTheme.typography.bodyLarge)
+            Text(text = item.descripcio, style = MaterialTheme.typography.bodyLarge)
+        }
+    }
+}
 
 

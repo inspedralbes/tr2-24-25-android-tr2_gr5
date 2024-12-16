@@ -1,11 +1,12 @@
 package com.example.supportly.network
 
 import com.example.supportly.model.PeticioResponse
-import com.example.supportly.model.Peticion
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.Call
+import java.util.concurrent.TimeUnit
 
 
 object RetrofitInstance {
@@ -26,5 +27,5 @@ object RetrofitInstance {
 
 interface Mentoria {
     @GET("peticion")
-    fun peticion(): Call<PeticioResponse>
+    fun peticion(): Call<List<PeticioResponse>>
 }
