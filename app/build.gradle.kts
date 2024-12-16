@@ -71,6 +71,7 @@ dependencies {
     implementation ("androidx.compose.material:material:1.5.0")
     implementation ("androidx.compose.ui:ui-tooling-preview:1.5.0")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation ("androidx.compose.material:material:<version>")
 
 
     testImplementation(libs.junit)

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp
@@ -66,26 +67,15 @@ fun Menuapp() {
                 }
             }
         }
-    ) {
-        NavHost(navController = navController, startDestination = "pantallaInicio") {
-            composable("pantallaInicio") { MenuScreen() }
-            composable("estadistiques") { /*Estadistiques content*/ }
-            composable("peticio"){ }
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it) // Aquí es donde se usa 'it', que es 'innerPadding'
-                .padding(top = 16.dp), // Asegura espacio arriba de la pantalla
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = "pantallaInicio",
+            modifier = Modifier.padding(innerPadding)
         ) {
-            when (selectedItem) {
-                0 -> MenuScreen()
-                1 -> Text(text = "Estadistiques", style = MaterialTheme.typography.bodyLarge)
-                2 -> Text(text = "Petició", style = MaterialTheme.typography.bodyLarge)
-            }
+            composable("pantallaInicio") { MenuScreen() }
+            composable("estadistiques") { MentorRatingsScreen() }
+            composable("peticio") { PeticioScreen() }
         }
     }
 }
@@ -109,13 +99,61 @@ fun MenuScreen() {
     }
 
     if (peticioResponse.peticions.isNotEmpty()) {
-        Text(text = "Petició Detalls:", style = MaterialTheme.typography.bodyLarge)
-        peticioResponse.peticions.forEach { peticio ->
-            Text(text = "${peticio.nom_Peticio}: ${peticio.descripcio}")
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Petició Detalls:",
+                style = MaterialTheme.typography.headlineSmall
+            )
+            peticioResponse.peticions.forEach { peticio ->
+                Text(text = "${peticio.nom_Peticio}: ${peticio.descripcio}")
+            }
         }
     } else {
-        Text(text = "No hay peticiones disponibles.")
+        Text(
+            text = "No hay peticiones disponibles.",
+            modifier = Modifier.fillMaxSize(),
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
-
 }
 
+@Composable
+fun MentorRatingsScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Estadísticas y Valoraciones",
+            style = MaterialTheme.typography.headlineSmall
+        )
+        // Aquí añade más contenido o lógica según lo necesites.
+    }
+}
+
+@Composable
+fun PeticioScreen() {
+    // Pantalla de Petició
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Gestión de Peticiones",
+            style = MaterialTheme.typography.headlineSmall
+        )
+        // Aquí añade más contenido o lógica según lo necesites.
+    }
+}
