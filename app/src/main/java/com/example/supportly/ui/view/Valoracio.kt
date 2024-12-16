@@ -3,7 +3,7 @@ package com.example.supportly.ui.view
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,6 +16,8 @@ import com.example.supportly.R
 
 @Composable
 fun ValoracioScreen(onBackPressed: () -> Unit = {}) {
+    var selectedStars by remember { mutableStateOf(0) } // Estado para las estrellas seleccionadas
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -47,7 +49,9 @@ fun ValoracioScreen(onBackPressed: () -> Unit = {}) {
         // Lista de mentores con valoraciones
         Column(modifier = Modifier.fillMaxWidth()) {
             repeat(3) { // Ajusta el número de mentores
-                MentorRatingItem()
+                MentorRatingItem(selectedStars = selectedStars, onStarSelected = { starIndex ->
+                    selectedStars = starIndex
+                })
             }
         }
 
@@ -56,7 +60,7 @@ fun ValoracioScreen(onBackPressed: () -> Unit = {}) {
 }
 
 @Composable
-fun MentorRatingItem() {
+fun MentorRatingItem(selectedStars: Int, onStarSelected: (Int) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -71,16 +75,33 @@ fun MentorRatingItem() {
                 .size(48.dp)
                 .padding(end = 16.dp)
         )
+
         // Estrellas para la calificación
         Row {
-            repeat(4) { // Número de estrellas
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_star),
-                    contentDescription = "Estrella",
-                    tint = Color.Red,
-                    modifier = Modifier.size(32.dp)
+            repeat(5) { index -> // 5 estrellas disponibles
+                StarIconButton(
+                    starIndex = index + 1,
+                    isSelected = selectedStars >= index + 1,
+                    onClick = { onStarSelected(index + 1) }
                 )
             }
         }
+    }
+}
+
+@Composable
+fun StarIconButton(starIndex: Int, isSelected: Boolean, onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier.padding(4.dp)
+    ) {
+        Icon(
+            painter = painterResource(
+                id = if (isSelected) R.drawable.ic_star else R.drawable.starblack
+            ),
+            contentDescription = "Estrella $starIndex",
+            modifier = Modifier.size(32.dp),
+            tint = if (isSelected) Color.Yellow else Color.Gray
+        )
     }
 }
