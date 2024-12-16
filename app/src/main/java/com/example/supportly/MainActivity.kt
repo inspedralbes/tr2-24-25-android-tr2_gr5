@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.supportly.ui.theme.SupportlyTheme
-import com.example.supportly.ui.view.Navegation.AppNavigation
+import com.example.supportly.ui.view.Navegation.AppNavigation // Asegúrate de importar AppNavigation
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,8 +13,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SupportlyTheme {
-                    AppNavigation()
-                }
+                AppNavigation() // Llamada a AppNavigation para gestionar la navegación
             }
         }
     }
+}

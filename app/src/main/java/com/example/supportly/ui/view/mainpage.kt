@@ -18,14 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.supportly.R
 
-
-
 @Composable
 fun MainPage(
     onNavigateToLogin: () -> Unit,
     onNavigateToSelectResgister: () -> Unit,
-
-    ) {
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -42,7 +39,6 @@ fun MainPage(
                 .height(200.dp),
             contentScale = ContentScale.Fit
         )
-
 
         Spacer(modifier = Modifier.height(150.dp))
 
@@ -91,5 +87,3 @@ fun MainPage(
         }
     }
 }
-
-

@@ -15,8 +15,9 @@ import androidx.compose.ui.unit.sp
 import com.example.supportly.R
 
 @Composable
-fun ValoracioScreen(onBackPressed: () -> Unit = {}) {
-    var selectedStars by remember { mutableStateOf(0) } // Estado para las estrellas seleccionadas
+fun ValoracioScreen(onSubmit: () -> Unit = {}) {
+    // Lista de mentores con sus estrellas seleccionadas
+    val mentors = remember { mutableStateListOf(0, 0, 0, 0, 0, 0) } // 6 mentores, 0 estrellas seleccionadas para cada uno
 
     Column(
         modifier = Modifier
@@ -24,17 +25,6 @@ fun ValoracioScreen(onBackPressed: () -> Unit = {}) {
             .background(Color.White)
             .padding(16.dp)
     ) {
-        // Botón de retroceso
-        IconButton(
-            onClick = { onBackPressed() },
-            modifier = Modifier.align(Alignment.Start)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_back_arrow),
-                contentDescription = "Volver"
-            )
-        }
-
         // Título
         Text(
             text = "VALORACIONES DE MENTOR",
@@ -48,14 +38,33 @@ fun ValoracioScreen(onBackPressed: () -> Unit = {}) {
 
         // Lista de mentores con valoraciones
         Column(modifier = Modifier.fillMaxWidth()) {
-            repeat(3) { // Ajusta el número de mentores
-                MentorRatingItem(selectedStars = selectedStars, onStarSelected = { starIndex ->
-                    selectedStars = starIndex
-                })
+            mentors.forEachIndexed { index, selectedStars ->
+                MentorRatingItem(
+                    selectedStars = selectedStars,
+                    onStarSelected = { starIndex ->
+                        mentors[index] = starIndex // Actualizar las estrellas para este mentor
+                    }
+                )
             }
         }
 
         Spacer(modifier = Modifier.weight(1f)) // Espaciador flexible
+
+        // Botón de "Enviar"
+        Button(
+            onClick = { onSubmit() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
+        ) {
+            Text(
+                text = "Enviar",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+        }
     }
 }
 
@@ -67,12 +76,12 @@ fun MentorRatingItem(selectedStars: Int, onStarSelected: (Int) -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        // Icono del mentor
+        // Icono del mentor (se aumenta el tamaño)
         Icon(
             painter = painterResource(id = R.drawable.ic_person),
             contentDescription = "Mentor",
             modifier = Modifier
-                .size(48.dp)
+                .size(72.dp)  // Tamaño aumentado de 48.dp a 72.dp
                 .padding(end = 16.dp)
         )
 
