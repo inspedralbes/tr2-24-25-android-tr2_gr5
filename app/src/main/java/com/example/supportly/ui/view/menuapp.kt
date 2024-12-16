@@ -20,10 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.*
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.network.RetrofitInstance
-import com.example.supportly.network.RetrofitInstance.api
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import okio.IOException
 
 @Composable
 fun Menuapp() {
@@ -71,70 +68,77 @@ fun Menuapp() {
                 }
             }
         }
-    ) {
-        NavHost(navController = navController, startDestination = "pantallaInicio") {
-            composable("pantallaInicio") { MenuScreen() }
-            composable("estadistiques") { /*Estadistiques content*/ }
-            composable("peticio"){ }
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(top = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = "pantallaInicio",
+            modifier = Modifier.padding(innerPadding)
         ) {
-            when (selectedItem) {
-                0 -> MenuScreen()
-                1 -> Text(text = "Estadistiques", style = MaterialTheme.typography.bodyLarge)
-                2 -> Text(text = "Petició", style = MaterialTheme.typography.bodyLarge)
-            }
+            composable("pantallaInicio") { MenuScreen() }
+            composable("estadistiques") {}
+            composable("peticio") {}
         }
     }
 }
 
 @Composable
 fun MenuScreen() {
+    val api = RetrofitInstance.api
     var peticioResponse by remember { mutableStateOf(PeticioResponse(emptyList())) }
-    var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         try {
-            val response = api.getPeticio().execute()
+            val response = api.peticion().execute()
             if (response.isSuccessful) {
-                peticioResponse = response.body() ?: PeticioResponse(emptyList())
+                println("hola")
+                response.body()?.let {
+                    peticioResponse = it
+                } ?: run {
+                    errorMessage = "La respuesta está vacía o no contiene peticiones."
+                }
             } else {
-                errorMessage = response.errorBody()?.string()
+                errorMessage = "Error en la respuesta: ${response.errorBody()?.string()}"
             }
+        } catch (e: IOException) {
+            errorMessage = "Error de red: ${e.message}"
         } catch (e: Exception) {
-            errorMessage = e.message
-        } finally {
-            isLoading = false
+            errorMessage = "Ocurrió un error inesperado: ${e.message}"
         }
     }
 
-    if (isLoading) {
-        CircularProgressIndicator()
-    } else if (!errorMessage.isNullOrEmpty()) {
-        Text(text = "Error: $errorMessage", color = Color.Red)
+    if (errorMessage != null) {
+        Text(
+            text = errorMessage!!,
+            modifier = Modifier.fillMaxSize(),
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.Red
+        )
     } else if (peticioResponse.peticions.isNotEmpty()) {
-        Text(text = "Petició Detalls:", style = MaterialTheme.typography.bodyLarge)
-        peticioResponse.peticions.forEach { peticio ->
-            Text(text = "${peticio.nom_peticio}: ${peticio.descripcio}")
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Petició Detalls:",
+                style = MaterialTheme.typography.headlineSmall
+            )
+            peticioResponse.peticions.forEach { peticio ->
+                Text(text = "${peticio.nom_peticio}: ${peticio.descripcio}")
+            }
         }
     } else {
-        Text(text = "No hay peticiones disponibles.")
+        Text(
+            text = "No hay peticiones disponibles.",
+            modifier = Modifier.fillMaxSize(),
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.Gray
+        )
     }
-
 }
-
-
-
-
-
 
 
 

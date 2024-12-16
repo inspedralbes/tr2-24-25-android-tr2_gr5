@@ -1,6 +1,7 @@
 package com.example.supportly.network
 
 import com.example.supportly.model.PeticioResponse
+import com.example.supportly.model.Peticion
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -8,7 +9,8 @@ import retrofit2.Call
 
 
 object RetrofitInstance {
-     private const val BASE_URL = "http://10.0.2.2:3010"
+    private const val BASE_URL = "http://10.0.2.2:3000/"
+
 
     private val retrofit by lazy {
         Retrofit.Builder()
@@ -24,5 +26,5 @@ object RetrofitInstance {
 
 interface Mentoria {
     @GET("peticion")
-    suspend fun getPeticio(): Call<PeticioResponse>
+    fun peticion(): Call<PeticioResponse>
 }
