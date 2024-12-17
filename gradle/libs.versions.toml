@@ -17,6 +17,7 @@ retrofit = "2.9.0"
 uiTestAndroid = "1.6.6"
 cronetEmbedded = "119.6045.31"
 carUiLib = "2.6.0"
+roomCommon = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +47,7 @@ retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson" }
 retrofit2-converter-scalars = { module = "com.squareup.retrofit2:converter-scalars" }
 retrofit2-retrofit = { module = "com.squareup.retrofit2:retrofit" }
 car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
+androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

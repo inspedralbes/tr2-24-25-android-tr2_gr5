@@ -1,5 +1,6 @@
 package com.example.supportly.network
 
+import androidx.room.Query
 import com.example.supportly.model.PeticioResponse
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
