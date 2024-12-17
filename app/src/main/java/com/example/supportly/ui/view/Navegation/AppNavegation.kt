@@ -9,7 +9,9 @@ import com.example.supportly.ui.view.RegisterAlumne
 import com.example.supportly.ui.view.RegisterMentor
 import com.example.supportly.ui.view.TipusRegister
 import androidx.compose.foundation.layout.*
+import com.example.supportly.network.Mentoria
 import com.example.supportly.ui.view.Menuapp
+import com.example.supportly.ui.view.peticioinfo
 
 
 @Composable
@@ -54,8 +56,14 @@ fun AppNavigation() {
         composable("menuapp") {
             Menuapp()
         }
-    }
+        /*
+        composable("peticioinfo/{id_peticio}") { backStackEntry ->
+            val id_peticio = backStackEntry.arguments?.getString("id_peticio")
+            peticioinfo(id_peticio)
+        }
+        */
 
+    }
 }
 
 

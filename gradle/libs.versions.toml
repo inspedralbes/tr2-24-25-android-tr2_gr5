@@ -18,6 +18,7 @@ uiTestAndroid = "1.6.6"
 cronetEmbedded = "119.6045.31"
 carUiLib = "2.6.0"
 roomCommon = "2.6.1"
+foundationLayoutAndroid = "1.6.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,6 +49,7 @@ retrofit2-converter-scalars = { module = "com.squareup.retrofit2:converter-scala
 retrofit2-retrofit = { module = "com.squareup.retrofit2:retrofit" }
 car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
+androidx-foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android", version.ref = "foundationLayoutAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

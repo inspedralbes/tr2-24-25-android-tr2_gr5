@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.MaterialTheme
@@ -125,11 +123,10 @@ fun MenuScreen(navController: NavController) {
     var categoriaList: MutableList<Categoria> by remember { mutableStateOf(mutableListOf()) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
-    var selectedCategory by remember { mutableStateOf<Int?>(null) } // Almacena el id_categoria seleccionado
+    var selectedCategory by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(key1 = Unit) {
         try {
-            // Cargar peticiones y categorías simultáneamente
             val peticions: List<PeticioResponse> = withContext(Dispatchers.IO) {
                 api.peticion().execute().body() ?: emptyList()
             }
@@ -159,7 +156,6 @@ fun MenuScreen(navController: NavController) {
         Text("Error: $error")
     } else {
         Column {
-            // Mostrar filtro dinámico basado en las categorías
             CategoryFilter(
                 categories = categoriaList,
                 selectedCategory = selectedCategory,
@@ -232,12 +228,12 @@ fun FilterChip(category: String, isSelected: Boolean, onClick: () -> Unit) {
 
 
 @Composable
-fun MenuItem(item: PeticioResponse, onClick: () -> Unit) {
+fun MenuItem(item: PeticioResponse, onNavigationToPeticioInfo: (String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onClick() },
+            .clickable { (onNavigationToPeticioInfo(item.id_peticio.toString())) },
         elevation = 2.dp
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
