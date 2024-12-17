@@ -28,14 +28,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 @Composable
 fun TipusRegister(
-    onNavigateToResgister: () -> Unit,
-){
-
+    onNavigateToResgister: (String) -> Unit, // Recibe un argumento para identificar el tipo de registro
+) {
     val opciones = listOf("Mentor", "Alumne")
     var opcionSeleccionada by remember { mutableStateOf(opciones[0]) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -43,50 +42,46 @@ fun TipusRegister(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-
         Spacer(modifier = Modifier.height(100.dp))
+
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 modifier = Modifier
                     .padding(50.dp),
-                text = "Elige el tipo de registro:",
-                style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Light)
+                text = "Selecciona el tipo de Registro:",
+                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             )
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
+        // Opciones con RadioButton
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             opciones.forEach { opcion ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(vertical = 8.dp)
                 ) {
-                    // RadioButton
                     androidx.compose.material3.RadioButton(
                         selected = opcion == opcionSeleccionada,
-                        onClick = { opcionSeleccionada = opcion }
+                        onClick = { opcionSeleccionada = opcion } // Cambia la opción seleccionada
                     )
                     Spacer(modifier = Modifier.width(5.dp))
-                    // Texto de la opción
                     Text(
                         text = opcion,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     )
                 }
+            }
         }
 
-            //ATENCIIÓN!!!!!!!
-
-            // HACER QUE SI LA SELECCION DE OPCION ES ALUMNO, SE VAYA AL REGISTRO DE ALUMNOS
-            // O QUE SI LA SELECCIONES PROFESOR SE VAYA AL REGISTRO DE PROFESOR
-
-
         Spacer(modifier = Modifier.height(50.dp))
+
+        // Botón para continuar al registro correspondiente
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button(
-                onClick = {onNavigateToResgister()},
+                onClick = { onNavigateToResgister(opcionSeleccionada) }, // Envía la opción seleccionada
                 colors = ButtonDefaults.buttonColors(Color.Blue),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -97,7 +92,7 @@ fun TipusRegister(
         }
     }
 }
-}
+
 
 
 
