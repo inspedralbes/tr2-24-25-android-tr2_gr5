@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import com.example.supportly.R
+import com.example.supportly.model.Categoria
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.network.RetrofitInstance.api
 import com.example.supportly.ui.theme.AquaMist
@@ -121,18 +122,27 @@ fun Menuapp() {
 @Composable
 fun MenuScreen(navController: NavController) {
     var peticioResponseList: MutableList<PeticioResponse> by remember { mutableStateOf(mutableListOf()) }
+    var categoriaList: MutableList<Categoria> by remember { mutableStateOf(mutableListOf()) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
-    var selectedCategory by remember { mutableStateOf("Totes les peticions") }
-    val categories = listOf("Totes les peticions", "Base de dades", "Programació", "Llenguatge de marques")
+    var selectedCategory by remember { mutableStateOf<Int?>(null) } // Almacena el id_categoria seleccionado
 
     LaunchedEffect(key1 = Unit) {
         try {
-            val response: List<PeticioResponse> = withContext(Dispatchers.IO) {
+            // Cargar peticiones y categorías simultáneamente
+            val peticions: List<PeticioResponse> = withContext(Dispatchers.IO) {
                 api.peticion().execute().body() ?: emptyList()
             }
+            val categories: List<Categoria> = withContext(Dispatchers.IO) {
+                api.categoria().execute().body() ?: emptyList()
+            }
+
             peticioResponseList.clear()
-            peticioResponseList.addAll(response)
+            peticioResponseList.addAll(peticions)
+
+            categoriaList.clear()
+            categoriaList.addAll(categories)
+
             isLoading = false
         } catch (e: IOException) {
             error = "Error de red: ${e.message}"
@@ -149,16 +159,17 @@ fun MenuScreen(navController: NavController) {
         Text("Error: $error")
     } else {
         Column {
+            // Mostrar filtro dinámico basado en las categorías
             CategoryFilter(
-                categories = categories,
+                categories = categoriaList,
                 selectedCategory = selectedCategory,
                 onCategorySelected = { selectedCategory = it }
             )
 
-            val filteredList = if (selectedCategory == "Totes les peticions") {
+            val filteredList = if (selectedCategory == null) {
                 peticioResponseList
             } else {
-                peticioResponseList.filter { it.categoria == selectedCategory }
+                peticioResponseList.filter { it.id_categoria == selectedCategory }
             }
 
             LazyColumn {
@@ -174,9 +185,9 @@ fun MenuScreen(navController: NavController) {
 
 @Composable
 fun CategoryFilter(
-    categories: List<String>,
-    selectedCategory: String,
-    onCategorySelected: (String) -> Unit
+    categories: List<Categoria>,
+    selectedCategory: Int?,
+    onCategorySelected: (Int?) -> Unit
 ) {
     LazyRow(
         modifier = Modifier
@@ -184,11 +195,18 @@ fun CategoryFilter(
             .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        item {
+            FilterChip(
+                category = "Todas",
+                isSelected = selectedCategory == null,
+                onClick = { onCategorySelected(null) }
+            )
+        }
         items(categories) { category ->
             FilterChip(
-                category = category,
-                isSelected = category == selectedCategory,
-                onClick = { onCategorySelected(category) }
+                category = category.nom,
+                isSelected = category.id_categoria == selectedCategory,
+                onClick = { onCategorySelected(category.id_categoria) }
             )
         }
     }
@@ -210,6 +228,8 @@ fun FilterChip(category: String, isSelected: Boolean, onClick: () -> Unit) {
         )
     }
 }
+
+
 
 @Composable
 fun MenuItem(item: PeticioResponse, onClick: () -> Unit) {

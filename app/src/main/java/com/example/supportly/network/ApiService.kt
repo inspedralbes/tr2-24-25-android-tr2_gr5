@@ -1,6 +1,7 @@
 package com.example.supportly.network
 
 import androidx.room.Query
+import com.example.supportly.model.Categoria
 import com.example.supportly.model.PeticioResponse
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -29,4 +30,7 @@ object RetrofitInstance {
 interface Mentoria {
     @GET("peticion")
     fun peticion(): Call<List<PeticioResponse>>
+
+    @GET("categoria")
+    fun categoria(): Call<List<Categoria>>
 }
