@@ -1,3 +1,4 @@
+// AppNavigation.kt
 package com.example.supportly.ui.view.Navegation
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -9,7 +10,7 @@ import com.example.supportly.ui.view.RegisterAlumne
 import com.example.supportly.ui.view.RegisterMentor
 import com.example.supportly.ui.view.TipusRegister
 import com.example.supportly.ui.view.Menuapp
-import com.example.supportly.ui.view.ValoracioScreen
+import com.example.supportly.ui.view.ValoracioScreen  // Asegúrate de importar ValoracioScreen
 import androidx.compose.foundation.layout.*
 
 @Composable

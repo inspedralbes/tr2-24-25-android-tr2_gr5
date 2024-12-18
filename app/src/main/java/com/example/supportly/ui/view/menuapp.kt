@@ -17,10 +17,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import com.example.supportly.ui.theme.DeepNavy
 import androidx.compose.ui.Alignment
@@ -99,7 +96,7 @@ fun Menuapp() {
                             when (index) {
                                 0 -> navController.navigate("pantallaInicio")
                                 1 -> navController.navigate("estadistiques") // Navegar a Valoracio
-                                2 -> navController.navigate("perfil")
+                                2 -> navController.navigate("perfil") // Navegar a Perfil
                             }
                         },
                         selectedContentColor = Color.Blue,
@@ -116,10 +113,11 @@ fun Menuapp() {
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
             composable("estadistiques") { ValoracioScreen() } // Redirigir a Valoracio desde el menú
-            composable("perfil") {}
+            composable("perfil") { PerfilScreen() } // Redirigir a Perfil desde el menú
         }
     }
 }
+
 
 @Composable
 fun MenuScreen(navController: NavController) {
