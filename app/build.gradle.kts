@@ -50,6 +50,7 @@ android {
 }
 
 dependencies {
+    // Originales (se mantienen todas)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -59,8 +60,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.test.android)
-    implementation (libs.converter.gson)
-    implementation (libs.androidx.navigation.compose.v273)
+    implementation(libs.converter.gson)
+    implementation(libs.androidx.navigation.compose.v273)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -70,16 +71,16 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.test.android)
-    implementation (libs.retrofit)
-    implementation ("androidx.compose.material:material:1.5.1")
-    implementation ("androidx.compose.material3:material3:1.2.0")
-    implementation ("androidx.compose.ui:ui:1.5.0")
-    implementation ("androidx.compose.material:material:1.5.0")
-    implementation ("androidx.compose.ui:ui-tooling-preview:1.5.0")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation(libs.retrofit)
+    implementation("androidx.compose.material:material:1.5.1")
+    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation("androidx.compose.ui:ui:1.5.0")
+    implementation("androidx.compose.material:material:1.5.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation ("androidx.compose.material:material:<version>")
+    implementation("androidx.compose.material:material:<version>")
     implementation("androidx.compose.ui:ui:1.7.6")
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation(libs.retrofit)
@@ -100,4 +101,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Nuevas dependencias agregadas
+    implementation("androidx.navigation:navigation-compose:2.7.3") // Agregada por diferencia
+    implementation(libs.converter.scalars) // Agregada por diferencia
+    implementation("androidx.compose.material3:material3:1.1.0") // Versión estable agregada
 }
