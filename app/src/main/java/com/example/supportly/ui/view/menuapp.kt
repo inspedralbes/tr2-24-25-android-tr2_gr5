@@ -8,31 +8,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.*
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.*
-import androidx.compose.ui.unit.dp
-import com.example.supportly.ui.theme.DeepNavy
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import com.example.supportly.R
 import com.example.supportly.model.Categoria
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.network.RetrofitInstance.api
-import com.example.supportly.ui.theme.AquaMist
-import com.example.supportly.ui.theme.MintCream
-import com.example.supportly.ui.theme.SkyBlue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.IOException
@@ -53,30 +44,26 @@ fun Menuapp() {
                     ) {
                         Column(
                             modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center, // Centra verticalmente
-                            horizontalAlignment = Alignment.CenterHorizontally // Centra horizontalmente
-                        )
-                        {
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             Image(
                                 painter = painterResource(id = R.drawable.logo),
                                 contentDescription = "Logo",
-                                modifier = Modifier.size(1200.dp)
-                                    .size(200.dp)
-                                    .padding(vertical = 8.dp)
+                                modifier = Modifier.size(200.dp).padding(vertical = 8.dp)
                             )
                         }
                     }
                 },
-                backgroundColor = SkyBlue,
-                contentColor = MintCream,
+                backgroundColor = Color.Blue,
+                contentColor = Color.White,
                 modifier = Modifier.height(100.dp)
-
             )
         },
         bottomBar = {
             BottomNavigation(
                 backgroundColor = Color.White,
-                contentColor = DeepNavy
+                contentColor = Color.Black
             ) {
                 val items = listOf("Peticions", "Valoracions", "Perfil")
                 val icons = listOf(Icons.Filled.Menu, Icons.Filled.Star, Icons.Filled.AccountCircle)
@@ -95,8 +82,8 @@ fun Menuapp() {
                             selectedItem = index
                             when (index) {
                                 0 -> navController.navigate("pantallaInicio")
-                                1 -> navController.navigate("estadistiques") // Navegar a Valoracio
-                                2 -> navController.navigate("perfil") // Navegar a Perfil
+                                1 -> navController.navigate("estadistiques")
+                                2 -> navController.navigate("perfil")
                             }
                         },
                         selectedContentColor = Color.Blue,
@@ -108,16 +95,15 @@ fun Menuapp() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "pantallaInicio",
+            startDestination = "pantallaInicio", // Inicia en pantallaInicio
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
-            composable("estadistiques") { ValoracioScreen() } // Redirigir a Valoracio desde el menú
-            composable("perfil") { PerfilScreen() } // Redirigir a Perfil desde el menú
+            composable("estadistiques") { ValoracioScreen() }
+            composable("perfil") { PerfilScreen() } // Pantalla de Perfil
         }
     }
 }
-
 
 @Composable
 fun MenuScreen(navController: NavController) {

@@ -1,5 +1,5 @@
-// AppNavigation.kt
 package com.example.supportly.ui.view.Navegation
+
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,8 +10,6 @@ import com.example.supportly.ui.view.RegisterAlumne
 import com.example.supportly.ui.view.RegisterMentor
 import com.example.supportly.ui.view.TipusRegister
 import com.example.supportly.ui.view.Menuapp
-import com.example.supportly.ui.view.ValoracioScreen  // Asegúrate de importar ValoracioScreen
-import androidx.compose.foundation.layout.*
 
 @Composable
 fun AppNavigation() {
@@ -53,12 +51,7 @@ fun AppNavigation() {
         }
 
         composable("menuapp") {
-            Menuapp()
-        }
-
-        // Añadir la ruta para la pantalla de Valoracion
-        composable("estadistiques") {
-            ValoracioScreen() // Redirige a la pantalla de Valoracio
+            Menuapp(navController = navController)
         }
     }
 }

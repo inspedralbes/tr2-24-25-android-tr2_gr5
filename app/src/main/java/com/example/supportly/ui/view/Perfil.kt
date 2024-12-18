@@ -15,11 +15,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.supportly.R // Asegúrate de importar R para acceder a los recursos
 import androidx.navigation.NavController
+import com.example.supportly.R
 
 @Composable
-fun PerfilScreen(onEdit: () -> Unit = {}) {
+fun PerfilScreen(navController: NavController, onEdit: () -> Unit = {}) {
     // Información del perfil (puedes modificar esto para que sea dinámico)
     val userName = remember { mutableStateOf("Juan Pérez") }
     val userDescription = remember { mutableStateOf("Desarrollador Android") }
@@ -75,6 +75,22 @@ fun PerfilScreen(onEdit: () -> Unit = {}) {
         ) {
             Text(
                 text = "Editar Perfil",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+        }
+
+        // Botón de logout
+        Button(
+            onClick = { navController.navigate("mainPage") }, // Aquí se navega de vuelta a la pantalla principal
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+        ) {
+            Text(
+                text = "Cerrar sesión",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
