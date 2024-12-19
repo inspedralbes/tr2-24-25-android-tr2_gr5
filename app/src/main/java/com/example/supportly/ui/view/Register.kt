@@ -28,8 +28,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-
-//FORMULARIO DE REGISTRO DE MENTOR
 @Composable
 fun RegisterMentor(navController: NavController) {
     Column(
@@ -60,6 +58,7 @@ fun RegisterMentor(navController: NavController) {
         var password by remember { mutableStateOf("") }
         var passwordVisible by remember { mutableStateOf(false) }
         var numTlf by remember { mutableStateOf("") }
+        var curs by remember { mutableStateOf("")}
 
         listOf(
             "Nombre" to nom,
@@ -84,7 +83,7 @@ fun RegisterMentor(navController: NavController) {
             )
         }
 
-        // Campo de contraseña
+
         TextField(
             value = password,
             onValueChange = { password = it },
@@ -104,7 +103,23 @@ fun RegisterMentor(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón de Registro
+        TextField(
+            value = curs,
+            onValueChange = { curs = it },
+            label = { Text("Curs") },
+            placeholder = { Text("Escribe tu contraseña") },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val icon = if (passwordVisible) "🙈" else "👁️"
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Text(icon)
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp)
+        )
+
         Button(
             onClick = { navController.navigate("menuapp")},
             colors = ButtonDefaults.buttonColors(Color.Blue),

@@ -3,11 +3,13 @@ package com.example.supportly.network
 import androidx.room.Query
 import com.example.supportly.model.Categoria
 import com.example.supportly.model.PeticioResponse
+import com.example.supportly.model.Usuari
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.Call
+import retrofit2.http.POST
 import java.util.concurrent.TimeUnit
 
 
@@ -33,4 +35,7 @@ interface Mentoria {
 
     @GET("categoria")
     fun categoria(): Call<List<Categoria>>
+
+    @POST("mentors")
+    fun mentors(): Call<List<Usuari>>
 }
