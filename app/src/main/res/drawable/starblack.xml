@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Borde negro de la estrella -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M12,2l3.09,6.26L22,9.27l-5,4.87L18.18,21 12,17.27 5.82,21 7,14.14l-5,-4.87 6.91,-1.01L12,2z"/>
+    <!-- Centro transparente de la estrella -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M12,8l1.45,2.93L16,11.27l-2.45,2.38L14.27,18 12,15.27 9.73,18l1.18,-4.35L8,11.27l2.55,-2.36L12,8z"/>
+</vector>

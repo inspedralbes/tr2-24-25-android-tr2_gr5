@@ -8,9 +8,9 @@ import com.example.supportly.ui.view.MainPage
 import com.example.supportly.ui.view.RegisterAlumne
 import com.example.supportly.ui.view.RegisterMentor
 import com.example.supportly.ui.view.TipusRegister
-import androidx.compose.foundation.layout.*
 import com.example.supportly.ui.view.Menuapp
-
+import com.example.supportly.ui.view.ValoracioScreen
+import androidx.compose.foundation.layout.*
 
 @Composable
 fun AppNavigation() {
@@ -54,10 +54,10 @@ fun AppNavigation() {
         composable("menuapp") {
             Menuapp()
         }
+
+        // Añadir la ruta para la pantalla de Valoracion
+        composable("estadistiques") {
+            ValoracioScreen() // Redirige a la pantalla de Valoracio
+        }
     }
-
 }
-
-
-
-

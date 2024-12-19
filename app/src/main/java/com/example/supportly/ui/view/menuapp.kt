@@ -1,4 +1,6 @@
+// Menuapp.kt
 package com.example.supportly.ui.view
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -66,11 +68,11 @@ fun Menuapp() {
                                     .padding(vertical = 8.dp)
                             )
                         }
-                        }
-                    },
-                    backgroundColor = SkyBlue,
-                    contentColor = MintCream,
-                    modifier = Modifier.height(100.dp)
+                    }
+                },
+                backgroundColor = SkyBlue,
+                contentColor = MintCream,
+                modifier = Modifier.height(100.dp)
 
             )
         },
@@ -96,7 +98,7 @@ fun Menuapp() {
                             selectedItem = index
                             when (index) {
                                 0 -> navController.navigate("pantallaInicio")
-                                1 -> navController.navigate("estadistiques")
+                                1 -> navController.navigate("estadistiques") // Navegar a Valoracio
                                 2 -> navController.navigate("perfil")
                             }
                         },
@@ -113,7 +115,7 @@ fun Menuapp() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
-            composable("estadistiques") {}
+            composable("estadistiques") { ValoracioScreen() } // Redirigir a Valoracio desde el menú
             composable("perfil") {}
         }
     }
@@ -229,8 +231,6 @@ fun FilterChip(category: String, isSelected: Boolean, onClick: () -> Unit) {
     }
 }
 
-
-
 @Composable
 fun MenuItem(item: PeticioResponse, onClick: () -> Unit) {
     Card(
@@ -245,5 +245,3 @@ fun MenuItem(item: PeticioResponse, onClick: () -> Unit) {
         }
     }
 }
-
-
