@@ -36,7 +36,8 @@ fun Login(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(15.dp),
+            .padding(15.dp)
+            .padding(vertical = 100.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -50,7 +51,7 @@ fun Login(navController: NavController) {
             )
         }
 
-        Spacer(modifier = Modifier.height(100.dp))
+        Spacer(modifier = Modifier.height(60.dp))
 
         // Campo de texto para el correo electrónico
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -93,7 +94,7 @@ fun Login(navController: NavController) {
         }
 
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
 
         // Botón de inicio de sesión

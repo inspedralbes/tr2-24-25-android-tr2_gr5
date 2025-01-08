@@ -1,5 +1,4 @@
 package com.example.supportly.ui.view.Navegation
-//ceració dev
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -9,9 +8,9 @@ import com.example.supportly.ui.view.MainPage
 import com.example.supportly.ui.view.RegisterAlumne
 import com.example.supportly.ui.view.RegisterMentor
 import com.example.supportly.ui.view.TipusRegister
-import androidx.compose.foundation.layout.*
 import com.example.supportly.ui.view.Menuapp
-
+import com.example.supportly.ui.view.ValoracioScreen
+import androidx.compose.foundation.layout.*
 
 @Composable
 fun AppNavigation() {
@@ -35,25 +34,30 @@ fun AppNavigation() {
 
         composable("selectRegister") {
             TipusRegister(
-                onNavigateToResgister = {
-                    navController.navigate("Register")
+                onNavigateToResgister = { userType ->
+                    when (userType) {
+                        "Mentor" -> navController.navigate("registerMentor")
+                        "Alumne" -> navController.navigate("registerAlumne")
+                    }
                 }
             )
         }
 
-        composable("Register") {
-            Column {
-                RegisterMentor()
-                RegisterAlumne()
-            }
+        composable("registerMentor") {
+            RegisterMentor(navController = navController)
+        }
+
+        composable("registerAlumne") {
+            RegisterAlumne(navController = navController)
         }
 
         composable("menuapp") {
             Menuapp()
         }
+
+        // Añadir la ruta para la pantalla de Valoracion
+        composable("estadistiques") {
+            ValoracioScreen() // Redirige a la pantalla de Valoracio
+        }
     }
 }
-
-
-
-
