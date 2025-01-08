@@ -9,6 +9,7 @@ import com.example.supportly.ui.view.RegisterAlumne
 import com.example.supportly.ui.view.RegisterMentor
 import com.example.supportly.ui.view.TipusRegister
 import androidx.compose.foundation.layout.*
+import com.example.supportly.ui.view.EsperaScreen
 import com.example.supportly.ui.view.Menuapp
 
 
@@ -53,6 +54,9 @@ fun AppNavigation() {
 
         composable("menuapp") {
             Menuapp()
+        }
+        composable("espera"){
+            EsperaScreen()
         }
     }
 

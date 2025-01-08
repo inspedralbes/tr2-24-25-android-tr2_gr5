@@ -1,18 +1,21 @@
 package com.example.supportly.ui.view
 
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,14 +25,113 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.supportly.model.Curs
+import com.example.supportly.model.Usuari
+import com.example.supportly.network.Mentoria
+import com.example.supportly.network.RetrofitInstance
+import com.example.supportly.network.RetrofitInstance.api
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+@Composable
+fun CursoSelect(api: Mentoria, onCursoSelected: (Int) -> Unit) {
+    var cursos by remember { mutableStateOf<List<Curs>>(emptyList()) }
+    var expanded by remember { mutableStateOf(false) }
+    var selectedCurso by remember { mutableStateOf<Curs?>(null) }
+
+    // Hacer la solicitud GET para obtener los cursos
+    LaunchedEffect(Unit) {
+        api.curs().enqueue(object : Callback<List<Curs>> {
+            override fun onResponse(call: Call<List<Curs>>, response: Response<List<Curs>>) {
+                if (response.isSuccessful) {
+                    cursos = response.body() ?: emptyList()
+                }
+            }
+
+            override fun onFailure(call: Call<List<Curs>>, t: Throwable) {
+                // Manejar el error aquí
+                Log.e("CursoSelect", "Error al obtener los cursos: ${t.message}")
+            }
+        })
+    }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        // Botón que abre el menú desplegable
+        TextField(
+            value = selectedCurso?.nom_curs ?: "Selecciona el teu curs",
+            onValueChange = {},
+            label = { Text("Curs") },
+            readOnly = true, // Hacer que el TextField sea solo lectura
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded }
+                .padding(vertical = 10.dp)
+        )
+
+        // Mostrar el DropdownMenu solo cuando expanded es true
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            cursos.forEach { curso ->
+                DropdownMenuItem(
+                    onClick = {
+                        selectedCurso = curso
+                        expanded = false
+                        onCursoSelected(curso.id_curs) // Pasamos el ID del curso seleccionado
+                    }
+                ) {
+                    Text(text = curso.nom_curs)
+                }
+            }
+        }
+    }
+}
+
+fun sendMentorData(
+    navController: NavController,
+    nom: String,
+    cognom: String,
+    correu_alumne: String,
+    correu_profe: String,
+    contrasenya: String,
+    id_curs: Int
+) {
+    val newMentor = Usuari(nom, cognom, correu_alumne, correu_profe, contrasenya, id_curs)
+
+    RetrofitInstance.api.registerMentor(newMentor).enqueue(object : Callback<ResponseBody> {
+        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+            if (response.isSuccessful) {
+                Log.d("RegisterMentor", "Registro exitoso")
+                navController.navigate("espera")
+            } else {
+                Log.e("RegisterMentor", "Error en el registro: ${response.message()}")
+            }
+        }
+
+        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+            Log.e("RegisterMentor", "Fallo en la conexión: ${t.message}")
+        }
+    })
+}
+
 @Composable
 fun RegisterMentor(navController: NavController) {
+    var nom by remember { mutableStateOf("") }
+    var cognom by remember { mutableStateOf("") }
+    var correu_alumne by remember { mutableStateOf("") }
+    var correu_profe by remember { mutableStateOf("") }
+    var contrasenya by remember { mutableStateOf("") }
+    var contrasenyaVisible by remember { mutableStateOf(false) }
+    var id_curs by remember { mutableStateOf(0) } // Aquí almacenamos el ID del curso seleccionado
+
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -37,13 +139,10 @@ fun RegisterMentor(navController: NavController) {
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Título
         Text(
             text = "Registro Mentor",
             style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Light),
-            modifier = Modifier
-                .padding(bottom = 30.dp)
-
+            modifier = Modifier.padding(bottom = 30.dp)
         )
         Text(
             text = "¿Preparado para Ayudar?",
@@ -51,87 +150,84 @@ fun RegisterMentor(navController: NavController) {
             modifier = Modifier.padding(bottom = 32.dp)
         )
 
-        // Lista de campos de texto
-        var nom by remember { mutableStateOf("") }
-        var emailAlumne by remember { mutableStateOf("") }
-        var emailProfesor by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var passwordVisible by remember { mutableStateOf(false) }
-        var numTlf by remember { mutableStateOf("") }
-        var curs by remember { mutableStateOf("")}
+        // Campos de texto
+        TextField(
+            value = nom,
+            onValueChange = { nom = it },
+            label = { Text("Nombre") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp)
+        )
+        TextField(
+            value = cognom,
+            onValueChange = { cognom = it },
+            label = { Text("Apellido") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp)
+        )
+        TextField(
+            value = correu_alumne,
+            onValueChange = { correu_alumne = it },
+            label = { Text("Correo Alumno") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp)
+        )
+        TextField(
+            value = correu_profe,
+            onValueChange = { correu_profe = it },
+            label = { Text("Correo Profesor") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp)
+        )
+        TextField(
+            value = contrasenya,
+            onValueChange = { contrasenya = it },
+            label = { Text("Contraseña") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp),
+            visualTransformation = if (contrasenyaVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val image = if (contrasenyaVisible) "🙈" else "👁️"
+                IconButton(onClick = { contrasenyaVisible = !contrasenyaVisible }) {
+                    Text(image)
+                }
+            }
+        )
 
-        listOf(
-            "Nombre" to nom,
-            "Correo Electrónico" to emailAlumne,
-            "Correo Electrónico Tutor Instituto" to emailProfesor,
-            "Número Teléfono" to numTlf
-        ).forEach { (label, value) ->
-            TextField(
-                value = value,
-                onValueChange = { newValue ->
-                    when (label) {
-                        "Nombre" -> nom = newValue
-                        "Correo Electrónico" -> emailAlumne = newValue
-                        "Correo Electrónico Tutor Instituto" -> emailProfesor = newValue
-                        "Número Teléfono" -> numTlf = newValue
-                    }
-                },
-                label = { Text(label) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp)
-            )
+        // Aquí integramos el selector de cursos
+        CursoSelect(api) { selectedId ->
+            id_curs = selectedId as Int // Asignamos el ID del curso seleccionado
         }
 
-
-        TextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Contraseña") },
-            placeholder = { Text("Escribe tu contraseña") },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                val icon = if (passwordVisible) "🙈" else "👁️"
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Text(icon)
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        TextField(
-            value = curs,
-            onValueChange = { curs = it },
-            label = { Text("Curs") },
-            placeholder = { Text("Escribe tu contraseña") },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                val icon = if (passwordVisible) "🙈" else "👁️"
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Text(icon)
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp)
-        )
-
         Button(
-            onClick = { navController.navigate("menuapp")},
-            colors = ButtonDefaults.buttonColors(Color.Blue),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 30.dp, horizontal = 45.dp)
+            onClick = {
+                if (id_curs != 0 && nom.isNotEmpty() && cognom.isNotEmpty() &&
+                    correu_alumne.isNotEmpty() && correu_profe.isNotEmpty() && contrasenya.isNotEmpty()) {
+                    sendMentorData(
+                        navController,
+                        nom,
+                        cognom,
+                        correu_alumne,
+                        correu_profe,
+                        contrasenya,
+                        id_curs
+                    )
+                    navController.navigate("espera")
+                } else {
+                    Log.e("RegisterMentor", "Faltan datos o ID Curso inválido")
+                }
+            },
+            modifier = Modifier.padding(top = 20.dp)
         ) {
-            Text(text = "Registrarse como Mentor")
+            Text("Registrar Mentor")
         }
     }
 }
-
 
 
 //HACER EL FORMULARIO DE REGISTRO DE ALUMNE
