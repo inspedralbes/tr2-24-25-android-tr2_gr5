@@ -1,3 +1,4 @@
+// Menuapp.kt
 package com.example.supportly.ui.view
 
 import androidx.compose.foundation.Image
@@ -108,13 +109,14 @@ fun Menuapp() {
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
             composable("estadistiques") { ValoracioScreen() }
-            composable("perfil") { ProfileScreen() }
+            composable("perfil") { ProfileScreen(navController) }
+            composable("editPerfil") { EditProfileScreen(navController) }  // Nueva ruta para editar perfil
         }
     }
 }
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -148,12 +150,55 @@ fun ProfileScreen() {
 
         // Botón para editar perfil
         Button(
-            onClick = { /* Navegar a la pantalla de edición */ },
+            onClick = { navController.navigate("editPerfil") },  // Navegar a la pantalla de edición
             modifier = Modifier
                 .padding(top = 16.dp)
                 .fillMaxWidth(0.6f)
         ) {
             Text(text = "Editar Perfil")
+        }
+    }
+}
+
+@Composable
+fun EditProfileScreen(navController: NavController) {
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        // Campo de nombre
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Nombre") },
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+        )
+
+        // Campo de correo
+        TextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Correo Electrónico") },
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+        )
+
+        // Botón para guardar los cambios
+        Button(
+            onClick = {
+                // Aquí podrías guardar los cambios en el perfil
+                navController.popBackStack() // Navegar de vuelta al perfil
+            },
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth(0.6f)
+        ) {
+            Text(text = "Guardar Cambios")
         }
     }
 }
