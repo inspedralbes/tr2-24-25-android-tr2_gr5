@@ -38,4 +38,7 @@ interface Mentoria {
 
     @POST("mentors")
     fun mentors(): Call<List<Usuari>>
+
+    @POST("login")
+    fun Login(): Call<List<Usuari>>
 }
