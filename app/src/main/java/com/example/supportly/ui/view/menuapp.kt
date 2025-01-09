@@ -11,11 +11,9 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
@@ -56,15 +54,14 @@ fun Menuapp() {
                     ) {
                         Column(
                             modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center, // Centra verticalmente
-                            horizontalAlignment = Alignment.CenterHorizontally // Centra horizontalmente
-                        )
-                        {
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             Image(
                                 painter = painterResource(id = R.drawable.logo),
                                 contentDescription = "Logo",
-                                modifier = Modifier.size(1200.dp)
-                                    .size(200.dp)
+                                modifier = Modifier
+                                    .size(120.dp)
                                     .padding(vertical = 8.dp)
                             )
                         }
@@ -73,7 +70,6 @@ fun Menuapp() {
                 backgroundColor = SkyBlue,
                 contentColor = MintCream,
                 modifier = Modifier.height(100.dp)
-
             )
         },
         bottomBar = {
@@ -98,7 +94,7 @@ fun Menuapp() {
                             selectedItem = index
                             when (index) {
                                 0 -> navController.navigate("pantallaInicio")
-                                1 -> navController.navigate("estadistiques") // Navegar a Valoracio
+                                1 -> navController.navigate("estadistiques")
                                 2 -> navController.navigate("perfil")
                             }
                         },
@@ -107,7 +103,19 @@ fun Menuapp() {
                     )
                 }
             }
-        }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate("añadirPeticion") // Navegar a la nueva pantalla
+                },
+                backgroundColor = AquaMist,
+                contentColor = Color.White
+            ) {
+                Icon(imageVector = Icons.Filled.Create, contentDescription = "Nuevo")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End // Ubicación del botón flotante
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -115,13 +123,14 @@ fun Menuapp() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
-            composable("estadistiques") { ValoracioScreen() } // Redirigir a Valoracio desde el menú
+            composable("estadistiques") { ValoracioScreen() }
             composable("perfil") {}
+            composable("añadirPeticion") { MakeRequest() } // Define la nueva pantalla aquí
         }
     }
 }
 
-@Composable
+    @Composable
 fun MenuScreen(navController: NavController) {
     var peticioResponseList: MutableList<PeticioResponse> by remember { mutableStateOf(mutableListOf()) }
     var categoriaList: MutableList<Categoria> by remember { mutableStateOf(mutableListOf()) }
