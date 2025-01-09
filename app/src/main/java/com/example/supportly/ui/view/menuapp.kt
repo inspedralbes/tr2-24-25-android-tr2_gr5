@@ -1,4 +1,8 @@
 package com.example.supportly.ui.view
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -103,13 +107,14 @@ fun Menuapp() {
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
             composable("estadistiques") { ValoracioScreen() }
-            composable("perfil") { ProfileScreen() }
+            composable("perfil") { ProfileScreen(navController) }
+            composable("editarPerfil") { EditProfileScreen(navController) }
         }
     }
 }
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(navController: NavController) {
     var selectedImage by rememberSaveable { mutableStateOf(R.drawable.futbol) }
 
     Column(
@@ -141,7 +146,9 @@ fun ProfileScreen() {
         )
 
         Button(
-            onClick = { },
+            onClick = {
+                navController.navigate("editarPerfil")
+            },
             modifier = Modifier
                 .padding(top = 16.dp)
                 .fillMaxWidth(0.6f)
@@ -169,6 +176,64 @@ fun ProfileScreen() {
                     onClick = { selectedImage = R.drawable.finlandia }
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun EditProfileScreen(navController: NavController) {
+    var selectedImage by rememberSaveable { mutableStateOf(R.drawable.futbol) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        Image(
+            painter = painterResource(id = selectedImage),
+            contentDescription = "Foto de perfil",
+            modifier = Modifier
+                .size(120.dp)
+                .padding(16.dp)
+        )
+
+        Text(
+            text = "Editar Foto de Perfil",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            item {
+                ImageSelection(
+                    imageRes = R.drawable.futbol,
+                    isSelected = selectedImage == R.drawable.futbol,
+                    onClick = { selectedImage = R.drawable.futbol }
+                )
+            }
+            item {
+                ImageSelection(
+                    imageRes = R.drawable.finlandia,
+                    isSelected = selectedImage == R.drawable.finlandia,
+                    onClick = { selectedImage = R.drawable.finlandia }
+                )
+            }
+        }
+
+        Button(
+            onClick = {
+                navController.navigateUp()  // Vuelve al perfil
+            },
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth(0.6f)
+        ) {
+            Text(text = "Guardar Cambios")
         }
     }
 }
