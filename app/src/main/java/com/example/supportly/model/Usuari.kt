@@ -8,5 +8,5 @@ data class Usuari(
     val correu_profe: String,
     val contrasenya: String,
     val id_curs: Int,
-    val valid_tut_aula: Boolean
+    val valid_tut_aula: Int
 )

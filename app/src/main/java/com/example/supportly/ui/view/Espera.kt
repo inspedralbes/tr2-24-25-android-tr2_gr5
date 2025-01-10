@@ -36,17 +36,21 @@ fun EsperaScreen(navController: NavController) {
     val context = LocalContext.current
     var showText by remember { mutableStateOf(false) }
     var loading by remember { mutableStateOf(true) }
+    var navigateToMenuApp by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         api.usuaris().enqueue(object : Callback<List<Usuari>> {
             override fun onResponse(call: Call<List<Usuari>>, response: Response<List<Usuari>>) {
                 if (response.isSuccessful) {
                     val usuarios = response.body()
-                    val usuarioValido = usuarios?.firstOrNull { it.valid_tut_aula }
+                    val usuarioValido = usuarios?.firstOrNull { it.valid_tut_aula == 1 }
 
-                    if (usuarioValido != null) {
+                    if (usuarioValido?.valid_tut_aula == 0) {
                         showText = true
-                        navController.navigate("menuapp")
+                        navigateToMenuApp = true
+                    } else {
+                        showText = false
+                        navigateToMenuApp = false
                     }
                 } else {
                     println("Error: ${response.message()}")
@@ -60,6 +64,11 @@ fun EsperaScreen(navController: NavController) {
             }
         })
     }
+
+    if (navigateToMenuApp) {
+        navController.navigate("menuapp")
+    }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -87,10 +96,20 @@ fun EsperaScreen(navController: NavController) {
                         style = MaterialTheme.typography.h6,
                         color = Color.Green
                     )
+                } else {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(80.dp),
+                        color = MaterialTheme.colors.primary,
+                        strokeWidth = 6.dp
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = "Espera mentres el tutor t'accepta la solicitud",
+                        style = MaterialTheme.typography.h6,
+                        color = Color.Gray
+                    )
                 }
             }
         }
     }
 }
-
-

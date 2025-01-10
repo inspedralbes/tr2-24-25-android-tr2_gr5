@@ -100,7 +100,7 @@ fun sendMentorData(
     correu_profe: String,
     contrasenya: String,
     id_curs: Int,
-    val_tut_aula: Boolean
+    val_tut_aula: Int
 
 ) {
     val newMentor = Usuari(nom, cognom, correu_alumne, correu_profe, contrasenya, id_curs, val_tut_aula)
@@ -215,7 +215,7 @@ fun RegisterMentor(navController: NavController) {
                         correu_profe,
                         contrasenya,
                         id_curs,
-                        val_tut_aula = false
+                        val_tut_aula = Int.MAX_VALUE
                     )
                     navController.navigate("espera")
                 } else {
