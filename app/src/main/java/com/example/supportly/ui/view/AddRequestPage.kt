@@ -61,7 +61,7 @@ fun MakeRequest() {
             onClick = {
                 scope.launch(Dispatchers.IO) {
                     val nuevaPeticion = PeticioResponse(
-                        id_usuari = 0, // No se usa ni se envía un valor explícito
+                        id_usuari = 1, // No se usa ni se envía un valor explícito
                         id_categoria = idCategoria.toIntOrNull() ?: 0,
                         nom_peticio = nomPeticio,
                         descripcio = descripcio
