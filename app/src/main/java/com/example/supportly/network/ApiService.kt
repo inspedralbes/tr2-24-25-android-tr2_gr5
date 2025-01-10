@@ -31,7 +31,7 @@ object RetrofitInstance {
 }
 
 interface Mentoria {
-    @GET("peticion")
+    @GET("peticionActivada")
     fun peticion(): Call<List<PeticioResponse>>
 
     @GET("categoria")
