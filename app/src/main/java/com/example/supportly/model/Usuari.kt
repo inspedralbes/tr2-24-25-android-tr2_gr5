@@ -7,5 +7,6 @@ data class Usuari(
     val correu_alumne: String,
     val correu_profe: String,
     val contrasenya: String,
-    val id_curs: Int
+    val id_curs: Int,
+    val valid_tut_aula: Boolean
 )

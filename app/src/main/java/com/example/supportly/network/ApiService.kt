@@ -1,19 +1,18 @@
 package com.example.supportly.network
 
-import androidx.room.Query
 import com.example.supportly.model.Categoria
 import com.example.supportly.model.Curs
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.model.Usuari
-import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
-import java.util.concurrent.TimeUnit
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 
 object RetrofitInstance {
@@ -44,4 +43,8 @@ interface Mentoria {
 
     @GET("curs")
     fun curs(): Call<List<Curs>>
+
+    @GET("usuaris")
+    fun usuaris(): Call<List<Usuari>>
+
 }

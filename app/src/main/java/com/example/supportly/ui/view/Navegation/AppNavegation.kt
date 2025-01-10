@@ -56,7 +56,7 @@ fun AppNavigation() {
             Menuapp()
         }
         composable("espera"){
-            EsperaScreen()
+            EsperaScreen(navController)
         }
     }
 

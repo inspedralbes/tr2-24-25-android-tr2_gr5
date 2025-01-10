@@ -46,7 +46,6 @@ fun CursoSelect(api: Mentoria, onCursoSelected: (Int) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var selectedCurso by remember { mutableStateOf<Curs?>(null) }
 
-    // Hacer la solicitud GET para obtener los cursos
     LaunchedEffect(Unit) {
         api.curs().enqueue(object : Callback<List<Curs>> {
             override fun onResponse(call: Call<List<Curs>>, response: Response<List<Curs>>) {
@@ -56,7 +55,6 @@ fun CursoSelect(api: Mentoria, onCursoSelected: (Int) -> Unit) {
             }
 
             override fun onFailure(call: Call<List<Curs>>, t: Throwable) {
-                // Manejar el error aquí
                 Log.e("CursoSelect", "Error al obtener los cursos: ${t.message}")
             }
         })
@@ -75,7 +73,6 @@ fun CursoSelect(api: Mentoria, onCursoSelected: (Int) -> Unit) {
                 .padding(vertical = 10.dp)
         )
 
-        // Mostrar el DropdownMenu solo cuando expanded es true
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
@@ -85,7 +82,7 @@ fun CursoSelect(api: Mentoria, onCursoSelected: (Int) -> Unit) {
                     onClick = {
                         selectedCurso = curso
                         expanded = false
-                        onCursoSelected(curso.id_curs) // Pasamos el ID del curso seleccionado
+                        onCursoSelected(curso.id_curs)
                     }
                 ) {
                     Text(text = curso.nom_curs)
@@ -102,11 +99,13 @@ fun sendMentorData(
     correu_alumne: String,
     correu_profe: String,
     contrasenya: String,
-    id_curs: Int
-) {
-    val newMentor = Usuari(nom, cognom, correu_alumne, correu_profe, contrasenya, id_curs)
+    id_curs: Int,
+    val_tut_aula: Boolean
 
-    RetrofitInstance.api.registerMentor(newMentor).enqueue(object : Callback<ResponseBody> {
+) {
+    val newMentor = Usuari(nom, cognom, correu_alumne, correu_profe, contrasenya, id_curs, val_tut_aula)
+
+    api.registerMentor(newMentor).enqueue(object : Callback<ResponseBody> {
         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
             if (response.isSuccessful) {
                 Log.d("RegisterMentor", "Registro exitoso")
@@ -130,7 +129,7 @@ fun RegisterMentor(navController: NavController) {
     var correu_profe by remember { mutableStateOf("") }
     var contrasenya by remember { mutableStateOf("") }
     var contrasenyaVisible by remember { mutableStateOf(false) }
-    var id_curs by remember { mutableStateOf(0) } // Aquí almacenamos el ID del curso seleccionado
+    var id_curs by remember { mutableStateOf(0) } //
 
     Column(
         modifier = Modifier
@@ -215,7 +214,8 @@ fun RegisterMentor(navController: NavController) {
                         correu_alumne,
                         correu_profe,
                         contrasenya,
-                        id_curs
+                        id_curs,
+                        val_tut_aula = false
                     )
                     navController.navigate("espera")
                 } else {
