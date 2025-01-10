@@ -130,13 +130,14 @@ fun Menuapp() {
     }
 }
 
-    @Composable
+@Composable
 fun MenuScreen(navController: NavController) {
     var peticioResponseList: MutableList<PeticioResponse> by remember { mutableStateOf(mutableListOf()) }
     var categoriaList: MutableList<Categoria> by remember { mutableStateOf(mutableListOf()) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var selectedCategory by remember { mutableStateOf<Int?>(null) } // Almacena el id_categoria seleccionado
+    var searchQuery by remember { mutableStateOf("") } // Almacena el texto de búsqueda
 
     LaunchedEffect(key1 = Unit) {
         try {
@@ -170,6 +171,16 @@ fun MenuScreen(navController: NavController) {
         Text("Error: $error")
     } else {
         Column {
+            // Barra de búsqueda
+            TextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                label = { Text("Buscar por nombre") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+
             // Mostrar filtro dinámico basado en las categorías
             CategoryFilter(
                 categories = categoriaList,
@@ -177,12 +188,13 @@ fun MenuScreen(navController: NavController) {
                 onCategorySelected = { selectedCategory = it }
             )
 
-            val filteredList = if (selectedCategory == null) {
-                peticioResponseList
-            } else {
-                peticioResponseList.filter { it.id_categoria == selectedCategory }
+            // Filtrar lista según la categoría y el texto de búsqueda
+            val filteredList = peticioResponseList.filter { peticio ->
+                (selectedCategory == null || peticio.id_categoria == selectedCategory) &&
+                        (searchQuery.isEmpty() || peticio.nom_peticio.contains(searchQuery, ignoreCase = true))
             }
 
+            // Mostrar la lista filtrada
             LazyColumn {
                 items(filteredList) { item ->
                     MenuItem(item) {
@@ -193,6 +205,7 @@ fun MenuScreen(navController: NavController) {
         }
     }
 }
+
 
 @Composable
 fun CategoryFilter(
