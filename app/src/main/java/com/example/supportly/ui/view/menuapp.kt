@@ -126,9 +126,19 @@ fun Menuapp() {
             composable("estadistiques") { ValoracioScreen() }
             composable("perfil") {}
             composable("añadirPeticion") { MakeRequest() } // Define la nueva pantalla aquí
+            composable("detalles/{id_peticio}") { backStackEntry ->
+                val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
+                if (idPeticio != null) {
+                    DetailsScreen(peticionId = idPeticio) // Llamar a DetailsScreen con el id_peticio
+                } else {
+                    // En caso de que el id no sea válido, muestra un mensaje de error
+                    Text("Petición no encontrada")
+                }
+            }
         }
     }
 }
+
 
 @Composable
 fun MenuScreen(navController: NavController) {
@@ -198,7 +208,7 @@ fun MenuScreen(navController: NavController) {
             LazyColumn {
                 items(filteredList) { item ->
                     MenuItem(item) {
-                        navController.navigate("detalles/${item.nom_peticio}")
+                        navController.navigate("detalles/${item.id_peticio}") // Usar el id_peticio
                     }
                 }
             }

@@ -20,6 +20,7 @@ fun MakeRequest() {
     var idCategoria by remember { mutableStateOf("") }
     var nomPeticio by remember { mutableStateOf("") }
     var descripcio by remember { mutableStateOf("") }
+    var idAssignat by remember { mutableStateOf("") }
     var mensajeResultado by remember { mutableStateOf<String?>(null) }
 
     val scope = rememberCoroutineScope()
@@ -57,14 +58,25 @@ fun MakeRequest() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        TextField(
+            value = idAssignat,
+            onValueChange = { idAssignat = it },
+            label = { Text("Usuario asignado a la peticion") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+
         Button(
             onClick = {
                 scope.launch(Dispatchers.IO) {
                     val nuevaPeticion = PeticioResponse(
+                        id_peticio = 0,
+                        id_usuari_asignat = idAssignat.toIntOrNull() ?: 0,
                         id_usuari = 1, // No se usa ni se envía un valor explícito
                         id_categoria = idCategoria.toIntOrNull() ?: 0,
                         nom_peticio = nomPeticio,
                         descripcio = descripcio
+
                     )
 
                     api.crearPeticion(nuevaPeticion).enqueue(object : Callback<ResponseBody> {
