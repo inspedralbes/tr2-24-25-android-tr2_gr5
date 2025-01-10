@@ -72,6 +72,18 @@ dependencies {
 
     // ROOMS
     implementation("androidx.room:room-runtime:2.5.1")
+    implementation("androidx.room:room-ktx:2.5.1")
+
+    // Room dependencies
+    implementation ("androidx.room:room-runtime:2.5.0")
+    annotationProcessor ("androidx.room:room-compiler:2.5.0")
+
+    // Coroutines support for Room
+    implementation ("androidx.room:room-ktx:2.5.0")
+
+    // Para poder usar la persistencia de datos en la base de datos Room
+    implementation ("androidx.room:room-common:2.5.0")
+
 
 
     // Retrofit y Coroutines

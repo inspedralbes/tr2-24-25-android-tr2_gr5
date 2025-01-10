@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
@@ -18,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -115,8 +117,6 @@ fun Menuapp() {
 
 @Composable
 fun ProfileScreen(navController: NavController) {
-    var selectedImage by rememberSaveable { mutableStateOf(R.drawable.futbol) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -125,10 +125,11 @@ fun ProfileScreen(navController: NavController) {
         verticalArrangement = Arrangement.Top
     ) {
         Image(
-            painter = painterResource(id = selectedImage),
+            painter = painterResource(id = R.drawable.ic_person),
             contentDescription = "Foto de perfil",
             modifier = Modifier
-                .size(120.dp)
+                .size(120.dp) // Tamaño igual para todas las imágenes
+                .clip(CircleShape) // Forma circular
                 .padding(16.dp)
         )
 
@@ -155,34 +156,12 @@ fun ProfileScreen(navController: NavController) {
         ) {
             Text(text = "Editar Perfil")
         }
-
-        Text("Selecciona una foto de perfil", modifier = Modifier.padding(top = 16.dp))
-
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            item {
-                ImageSelection(
-                    imageRes = R.drawable.futbol,
-                    isSelected = selectedImage == R.drawable.futbol,
-                    onClick = { selectedImage = R.drawable.futbol }
-                )
-            }
-            item {
-                ImageSelection(
-                    imageRes = R.drawable.finlandia,
-                    isSelected = selectedImage == R.drawable.finlandia,
-                    onClick = { selectedImage = R.drawable.finlandia }
-                )
-            }
-        }
     }
 }
 
 @Composable
 fun EditProfileScreen(navController: NavController) {
-    var selectedImage by rememberSaveable { mutableStateOf(R.drawable.futbol) }
+    var selectedImage by rememberSaveable { mutableStateOf(R.drawable.ic_person) }
 
     Column(
         modifier = Modifier
@@ -195,7 +174,8 @@ fun EditProfileScreen(navController: NavController) {
             painter = painterResource(id = selectedImage),
             contentDescription = "Foto de perfil",
             modifier = Modifier
-                .size(120.dp)
+                .size(120.dp) // Tamaño igual para todas las imágenes
+                .clip(CircleShape) // Forma circular
                 .padding(16.dp)
         )
 
@@ -209,6 +189,49 @@ fun EditProfileScreen(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
+
+            item {
+                ImageSelection(
+                    imageRes = R.drawable.bulbasour,
+                    isSelected = selectedImage == R.drawable.bulbasour,
+                    onClick = { selectedImage = R.drawable.bulbasour }
+                )
+            }
+
+            item {
+                ImageSelection(
+                    imageRes = R.drawable.charmader,
+                    isSelected = selectedImage == R.drawable.charmader,
+                    onClick = { selectedImage = R.drawable.charmader }
+                )
+            }
+
+
+            item {
+                ImageSelection(
+                    imageRes = R.drawable.squirtel,
+                    isSelected = selectedImage == R.drawable.squirtel,
+                    onClick = { selectedImage = R.drawable.squirtel }
+                )
+            }
+
+
+            item {
+                ImageSelection(
+                    imageRes = R.drawable.unnamed,
+                    isSelected = selectedImage == R.drawable.unnamed,
+                    onClick = { selectedImage = R.drawable.unnamed }
+                )
+            }
+
+            item {
+                ImageSelection(
+                    imageRes = R.drawable.volleyball,
+                    isSelected = selectedImage == R.drawable.volleyball,
+                    onClick = { selectedImage = R.drawable.volleyball }
+                )
+            }
+
             item {
                 ImageSelection(
                     imageRes = R.drawable.futbol,
@@ -216,13 +239,16 @@ fun EditProfileScreen(navController: NavController) {
                     onClick = { selectedImage = R.drawable.futbol }
                 )
             }
+
             item {
                 ImageSelection(
-                    imageRes = R.drawable.finlandia,
-                    isSelected = selectedImage == R.drawable.finlandia,
-                    onClick = { selectedImage = R.drawable.finlandia }
+                    imageRes = R.drawable.futbolamericano,
+                    isSelected = selectedImage == R.drawable.futbolamericano,
+                    onClick = { selectedImage = R.drawable.futbolamericano }
                 )
             }
+
+
         }
 
         Button(
@@ -252,7 +278,9 @@ fun ImageSelection(imageRes: Int, isSelected: Boolean, onClick: () -> Unit) {
         Image(
             painter = painterResource(id = imageRes),
             contentDescription = "Imagen seleccionada",
-            modifier = Modifier.size(80.dp)
+            modifier = Modifier
+                .size(80.dp) // Tamaño igual para todas las imágenes
+                .clip(CircleShape) // Forma circular
         )
     }
 }
