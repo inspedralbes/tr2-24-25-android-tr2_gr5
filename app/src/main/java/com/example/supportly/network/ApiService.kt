@@ -11,6 +11,7 @@ import retrofit2.http.GET
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
@@ -43,4 +44,10 @@ interface Mentoria {
 
     @GET("peticion/{id}")
     fun getPeticionID(@Path("id") id: Int): Call<PeticioResponse>
+
+    @PUT("peticion/{id}/asignada")
+    fun asignarUsuario(
+        @Path("id") id: Int, // ID de la petición
+        @Body usuaroAsignado: PeticioResponse // Se envía un mapa con id_usuari_asignat
+    ): Call<ResponseBody>
 }

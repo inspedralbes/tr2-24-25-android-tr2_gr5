@@ -1,5 +1,6 @@
 package com.example.supportly.ui.view.Navegation
 
+import DetailsScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,7 +12,7 @@ import com.example.supportly.ui.view.RegisterMentor
 import com.example.supportly.ui.view.TipusRegister
 import com.example.supportly.ui.view.Menuapp
 import com.example.supportly.ui.view.ValoracioScreen
-import com.example.supportly.ui.view.DetailsScreen // Importar la pantalla de detalles
+ // Importar la pantalla de detalles
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 
@@ -66,8 +67,9 @@ fun AppNavigation() {
         // Nueva ruta para detalles de una petición
         composable("detalles/{id_peticio}") { backStackEntry ->
             val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
+            val currentUserId = 2;
             if (idPeticio != null) {
-                DetailsScreen(peticionId = idPeticio) // Llamar a DetailsScreen con el id_peticio
+                DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Llamar a DetailsScreen con el id_peticio
             } else {
                 // En caso de que el id no sea válido, muestra un mensaje de error
                 Text("Petición no encontrada")

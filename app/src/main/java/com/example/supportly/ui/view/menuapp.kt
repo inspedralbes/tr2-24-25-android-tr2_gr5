@@ -1,6 +1,7 @@
 // Menuapp.kt
 package com.example.supportly.ui.view
 
+import DetailsScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -128,8 +129,9 @@ fun Menuapp() {
             composable("añadirPeticion") { MakeRequest() } // Define la nueva pantalla aquí
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
+                val currentUserId = 2;
                 if (idPeticio != null) {
-                    DetailsScreen(peticionId = idPeticio) // Llamar a DetailsScreen con el id_peticio
+                    DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Pasar el ID del usuario actual
                 } else {
                     // En caso de que el id no sea válido, muestra un mensaje de error
                     Text("Petición no encontrada")
@@ -138,6 +140,7 @@ fun Menuapp() {
         }
     }
 }
+
 
 
 @Composable
