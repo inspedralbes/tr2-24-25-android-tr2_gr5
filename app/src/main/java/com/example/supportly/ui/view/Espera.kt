@@ -1,5 +1,6 @@
 package com.example.supportly.ui.view
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,52 +23,54 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.supportly.model.Usuari
-import com.example.supportly.network.RetrofitInstance.api
-import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import com.example.supportly.network.MyWebSocketListener
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 @Composable
 fun EsperaScreen(navController: NavController) {
     val context = LocalContext.current
-    var showText by remember { mutableStateOf(false) }
-    var loading by remember { mutableStateOf(true) }
+    val client = remember { OkHttpClient() }
     var navigateToMenuApp by remember { mutableStateOf(false) }
+    var navigateToLogin by remember { mutableStateOf(false) }
+    var rejectionMessage by remember { mutableStateOf("") }
+
+    val wsUrl = "http://10.0.2.2:3000"
+
+    // WebSocket Listener
+    val webSocketListener = remember {
+        MyWebSocketListener { mentorId, validado, message ->
+            if (validado as Boolean) {
+                navigateToMenuApp = true
+            } else {
+                rejectionMessage = message.toString()
+                navigateToLogin = true
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
-        api.usuaris().enqueue(object : Callback<List<Usuari>> {
-            override fun onResponse(call: Call<List<Usuari>>, response: Response<List<Usuari>>) {
-                if (response.isSuccessful) {
-                    val usuarios = response.body()
-                    val usuarioValido = usuarios?.firstOrNull { it.valid_tut_aula == 1 }
+        val request = Request.Builder()
+            .url(wsUrl)
+            .build()
 
-                    if (usuarioValido?.valid_tut_aula == 0) {
-                        showText = true
-                        navigateToMenuApp = true
-                    } else {
-                        showText = false
-                        navigateToMenuApp = false
-                    }
-                } else {
-                    println("Error: ${response.message()}")
-                }
-                loading = false
-            }
-
-            override fun onFailure(call: Call<List<Usuari>>, t: Throwable) {
-                println("Error de red: ${t.message}")
-                loading = false
-            }
-        })
+        client.newWebSocket(request, webSocketListener)
     }
 
     if (navigateToMenuApp) {
-        navController.navigate("menuapp")
+        navController.navigate("menuapp") {
+            popUpTo("espera") { inclusive = true }
+        }
     }
 
+    if (navigateToLogin) {
+        Toast.makeText(context, "El tutor ha denegat la teva solicitud", Toast.LENGTH_LONG).show()
+        navController.navigate("login") {
+            popUpTo("espera") { inclusive = true }
+        }
+    }
+
+    // Pantalla de espera
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -77,39 +79,17 @@ fun EsperaScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            if (loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(80.dp),
-                    color = MaterialTheme.colors.primary,
-                    strokeWidth = 6.dp
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = "Espera mentres el tutor t'accepta la solicitud",
-                    style = MaterialTheme.typography.h6,
-                    color = Color.Gray
-                )
-            } else {
-                if (showText) {
-                    Text(
-                        text = "¡Registro completado!",
-                        style = MaterialTheme.typography.h6,
-                        color = Color.Green
-                    )
-                } else {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(80.dp),
-                        color = MaterialTheme.colors.primary,
-                        strokeWidth = 6.dp
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = "Espera mentres el tutor t'accepta la solicitud",
-                        style = MaterialTheme.typography.h6,
-                        color = Color.Gray
-                    )
-                }
-            }
+            CircularProgressIndicator(
+                modifier = Modifier.size(80.dp),
+                color = MaterialTheme.colors.primary,
+                strokeWidth = 6.dp
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "Espera mentres el tutor accepta la solicitud",
+                style = MaterialTheme.typography.h6,
+                color = Color.Gray
+            )
         }
     }
 }

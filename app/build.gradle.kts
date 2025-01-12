@@ -91,6 +91,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation ("io.socket:socket.io-client:2.1.1")
     implementation(libs.car.ui.lib)
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.espresso.core)
