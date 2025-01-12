@@ -1,4 +1,7 @@
+// Menuapp.kt
 package com.example.supportly.ui.view
+
+import DetailsScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,11 +12,9 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
@@ -54,24 +55,22 @@ fun Menuapp() {
                     ) {
                         Column(
                             modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center, // Centra verticalmente
-                            horizontalAlignment = Alignment.CenterHorizontally // Centra horizontalmente
-                        )
-                        {
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             Image(
                                 painter = painterResource(id = R.drawable.logo),
                                 contentDescription = "Logo",
-                                modifier = Modifier.size(1200.dp)
-                                    .size(200.dp)
+                                modifier = Modifier
+                                    .size(120.dp)
                                     .padding(vertical = 8.dp)
                             )
                         }
-                        }
-                    },
-                    backgroundColor = SkyBlue,
-                    contentColor = MintCream,
-                    modifier = Modifier.height(100.dp)
-
+                    }
+                },
+                backgroundColor = SkyBlue,
+                contentColor = MintCream,
+                modifier = Modifier.height(100.dp)
             )
         },
         bottomBar = {
@@ -105,7 +104,19 @@ fun Menuapp() {
                     )
                 }
             }
-        }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate("añadirPeticion") // Navegar a la nueva pantalla
+                },
+                backgroundColor = AquaMist,
+                contentColor = Color.White
+            ) {
+                Icon(imageVector = Icons.Filled.Create, contentDescription = "Nuevo")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End // Ubicación del botón flotante
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -113,11 +124,24 @@ fun Menuapp() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
-            composable("estadistiques") {}
+            composable("estadistiques") { ValoracioScreen() }
             composable("perfil") {}
+            composable("añadirPeticion") { MakeRequest() } // Define la nueva pantalla aquí
+            composable("detalles/{id_peticio}") { backStackEntry ->
+                val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
+                val currentUserId = 2;
+                if (idPeticio != null) {
+                    DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Pasar el ID del usuario actual
+                } else {
+                    // En caso de que el id no sea válido, muestra un mensaje de error
+                    Text("Petición no encontrada")
+                }
+            }
         }
     }
 }
+
+
 
 @Composable
 fun MenuScreen(navController: NavController) {
@@ -126,6 +150,7 @@ fun MenuScreen(navController: NavController) {
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var selectedCategory by remember { mutableStateOf<Int?>(null) } // Almacena el id_categoria seleccionado
+    var searchQuery by remember { mutableStateOf("") } // Almacena el texto de búsqueda
 
     LaunchedEffect(key1 = Unit) {
         try {
@@ -159,6 +184,16 @@ fun MenuScreen(navController: NavController) {
         Text("Error: $error")
     } else {
         Column {
+            // Barra de búsqueda
+            TextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                label = { Text("Buscar por nombre") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+
             // Mostrar filtro dinámico basado en las categorías
             CategoryFilter(
                 categories = categoriaList,
@@ -166,22 +201,24 @@ fun MenuScreen(navController: NavController) {
                 onCategorySelected = { selectedCategory = it }
             )
 
-            val filteredList = if (selectedCategory == null) {
-                peticioResponseList
-            } else {
-                peticioResponseList.filter { it.id_categoria == selectedCategory }
+            // Filtrar lista según la categoría y el texto de búsqueda
+            val filteredList = peticioResponseList.filter { peticio ->
+                (selectedCategory == null || peticio.id_categoria == selectedCategory) &&
+                        (searchQuery.isEmpty() || peticio.nom_peticio.contains(searchQuery, ignoreCase = true))
             }
 
+            // Mostrar la lista filtrada
             LazyColumn {
                 items(filteredList) { item ->
                     MenuItem(item) {
-                        navController.navigate("detalles/${item.nom_peticio}")
+                        navController.navigate("detalles/${item.id_peticio}") // Usar el id_peticio
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun CategoryFilter(
@@ -229,8 +266,6 @@ fun FilterChip(category: String, isSelected: Boolean, onClick: () -> Unit) {
     }
 }
 
-
-
 @Composable
 fun MenuItem(item: PeticioResponse, onClick: () -> Unit) {
     Card(
@@ -245,5 +280,3 @@ fun MenuItem(item: PeticioResponse, onClick: () -> Unit) {
         }
     }
 }
-
-

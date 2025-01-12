@@ -1,18 +1,19 @@
 package com.example.supportly.network
 
+import androidx.room.Query
 import com.example.supportly.model.Categoria
-import com.example.supportly.model.Curs
 import com.example.supportly.model.PeticioResponse
-import com.example.supportly.model.Usuari
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import java.util.concurrent.TimeUnit
 
 
 object RetrofitInstance {
@@ -29,22 +30,24 @@ object RetrofitInstance {
     val api: Mentoria by lazy {
         retrofit.create(Mentoria::class.java)
     }
-}   
+}
 
 interface Mentoria {
-    @GET("peticion")
+    @GET("peticionActivada")
     fun peticion(): Call<List<PeticioResponse>>
 
     @GET("categoria")
     fun categoria(): Call<List<Categoria>>
 
-    @POST("mentors")
-    fun registerMentor(@Body mentor: Usuari): Call<ResponseBody>
+    @POST("peticion")
+    fun crearPeticion(@Body nuevaPeticion: PeticioResponse): Call<ResponseBody>
 
-    @GET("curs")
-    fun curs(): Call<List<Curs>>
+    @GET("peticion/{id}")
+    fun getPeticionID(@Path("id") id: Int): Call<PeticioResponse>
 
-    @GET("usuaris")
-    fun usuaris(): Call<List<Usuari>>
-
+    @PUT("peticion/{id}/asignada")
+    fun asignarUsuario(
+        @Path("id") id: Int, // ID de la petición
+        @Body usuaroAsignado: PeticioResponse // Se envía un mapa con id_usuari_asignat
+    ): Call<ResponseBody>
 }
