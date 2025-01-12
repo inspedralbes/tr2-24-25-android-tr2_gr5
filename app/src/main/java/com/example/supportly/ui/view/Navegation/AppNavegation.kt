@@ -15,6 +15,9 @@ import com.example.supportly.ui.view.ValoracioScreen
  // Importar la pantalla de detalles
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.supportly.ui.view.ChatViewModel
+import com.example.supportly.ui.view.ChatsScreen
 import com.example.supportly.ui.view.EsperaScreen
 
 @Composable
@@ -64,9 +67,8 @@ fun AppNavigation() {
             EsperaScreen(navController)
         }
 
-        // Añadir la ruta para la pantalla de Valoracio
         composable("estadistiques") {
-            ValoracioScreen() // Redirige a la pantalla de Valoracio
+            ValoracioScreen()
         }
 
         // Nueva ruta para detalles de una petición
@@ -76,9 +78,17 @@ fun AppNavigation() {
             if (idPeticio != null) {
                 DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Llamar a DetailsScreen con el id_peticio
             } else {
-                // En caso de que el id no sea válido, muestra un mensaje de error
                 Text("Petición no encontrada")
             }
         }
+        composable("chatsScreen/{sender}/{receiver}") { backStackEntry ->
+            val sender = backStackEntry.arguments?.getString("sender") ?: ""
+            val receiver = backStackEntry.arguments?.getString("receiver") ?: ""
+
+            // Aquí pasamos el sender y receiver al ViewModel
+            val chatViewModel: ChatViewModel = viewModel()
+            ChatsScreen(viewModel = chatViewModel, sender = sender, receiver = receiver)
+        }
+
     }
 }

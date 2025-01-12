@@ -10,7 +10,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import com.example.supportly.R
@@ -43,6 +46,8 @@ import okio.IOException
 fun Menuapp() {
     val navController = rememberNavController()
     var selectedItem by remember { mutableStateOf(0) }
+    val sender = "usuarioActual"  // Deberías obtener el valor real de usuario actual
+    val receiver = "usuarioReceptor" // Deberías obtener el valor real del receptor
 
     Scaffold(
         topBar = {
@@ -66,6 +71,14 @@ fun Menuapp() {
                                     .padding(vertical = 8.dp)
                             )
                         }
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+
+                        navController.navigate("chatsScreen/$sender/$receiver")
+                    }) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.Chat, contentDescription = "Chat Icon")
                     }
                 },
                 backgroundColor = SkyBlue,
@@ -127,6 +140,13 @@ fun Menuapp() {
             composable("estadistiques") { ValoracioScreen() }
             composable("perfil") {}
             composable("añadirPeticion") { MakeRequest() } // Define la nueva pantalla aquí
+            composable("chatsScreen/{sender}/{receiver}") { backStackEntry ->
+                val sender = backStackEntry.arguments?.getString("sender") ?: ""
+                val receiver = backStackEntry.arguments?.getString("receiver") ?: ""
+
+                val chatViewModel: ChatViewModel = viewModel()
+                ChatsScreen(viewModel = chatViewModel, sender = sender, receiver = receiver)
+            }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
                 val currentUserId = 2;

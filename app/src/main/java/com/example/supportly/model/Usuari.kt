@@ -10,3 +10,4 @@ data class Usuari(
     val id_curs: Int,
     val valid_tut_aula: Int
 )
+

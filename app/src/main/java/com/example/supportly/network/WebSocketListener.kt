@@ -1,6 +1,8 @@
 package com.example.supportly.network
 
 import android.util.Log
+import com.example.supportly.model.Message
+import com.example.supportly.network.RetrofitInstance.api
 import io.socket.client.IO
 import io.socket.client.Socket
 import okhttp3.WebSocketListener
@@ -40,6 +42,22 @@ class MyWebSocketListener(
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Log.e("SocketIO", "Error parsing mentor-validat event", e)
+                }
+            }
+        }
+        mSocket.on("messageReceived") { args ->
+            if (args.isNotEmpty()) {
+                val newMessage = args[0] as JSONObject
+                try {
+                    // Extraer los datos del mensaje
+                    val sender = newMessage.getString("sender")
+                    val receiver = newMessage.getString("receiver")
+                    val message = newMessage.getString("message")
+                    val timestamp = newMessage.getString("timestamp")
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Log.e("SocketIO", "Error parsing messageReceived event", e)
                 }
             }
         }
