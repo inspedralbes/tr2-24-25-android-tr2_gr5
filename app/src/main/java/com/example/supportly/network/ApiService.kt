@@ -2,7 +2,9 @@ package com.example.supportly.network
 
 import androidx.room.Query
 import com.example.supportly.model.Categoria
+import com.example.supportly.model.Curs
 import com.example.supportly.model.PeticioResponse
+import com.example.supportly.model.Usuari
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
@@ -50,4 +52,10 @@ interface Mentoria {
         @Path("id") id: Int, // ID de la petición
         @Body usuaroAsignado: PeticioResponse // Se envía un mapa con id_usuari_asignat
     ): Call<ResponseBody>
+
+    @POST("mentors")
+    fun registerMentor(@Body mentor: Usuari): Call<ResponseBody>
+
+    @GET("curs")
+    fun curs(): Call<List<Curs>>
 }

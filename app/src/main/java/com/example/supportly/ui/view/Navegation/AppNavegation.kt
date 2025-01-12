@@ -15,6 +15,7 @@ import com.example.supportly.ui.view.ValoracioScreen
  // Importar la pantalla de detalles
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
+import com.example.supportly.ui.view.EsperaScreen
 
 @Composable
 fun AppNavigation() {
@@ -57,6 +58,10 @@ fun AppNavigation() {
 
         composable("menuapp") {
             Menuapp()
+        }
+
+        composable("espera") {
+            EsperaScreen(navController)
         }
 
         // Añadir la ruta para la pantalla de Valoracio
