@@ -1,6 +1,8 @@
 package com.example.supportly.network
 
 import com.example.supportly.model.Categoria
+import com.example.supportly.model.LoginRequest
+import com.example.supportly.model.LoginResponse
 import com.example.supportly.model.Curs
 import com.example.supportly.model.Message
 import com.example.supportly.model.PeticioResponse
@@ -56,6 +58,9 @@ interface Mentoria {
 
     @POST("mentors")
     fun registerMentor(@Body mentor: Usuari): Call<ResponseBody>
+
+    @POST("login")
+    fun login(@Body credentials: LoginRequest): Call<LoginResponse>
 
     @GET("curs")
     fun curs(): Call<List<Curs>>
