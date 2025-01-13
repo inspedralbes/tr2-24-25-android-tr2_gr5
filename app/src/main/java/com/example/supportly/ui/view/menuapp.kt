@@ -78,8 +78,13 @@ fun Menuapp() {
                 backgroundColor = Color.White,
                 contentColor = DeepNavy
             ) {
-                val items = listOf("Peticions", "Valoracions", "Perfil")
-                val icons = listOf(Icons.Filled.Menu, Icons.Filled.Star, Icons.Filled.AccountCircle)
+                val items = listOf("Peticions", "Usuarios", "Perfil")
+                val icons = listOf(
+                    Icons.Filled.Menu,
+                    Icons.Filled.Star,
+                    Icons.Filled.AccountCircle,
+                    Icons.Filled.AccountCircle // Cambiar el ícono si lo deseas
+                )
 
                 items.forEachIndexed { index, item ->
                     BottomNavigationItem(
@@ -95,7 +100,7 @@ fun Menuapp() {
                             selectedItem = index
                             when (index) {
                                 0 -> navController.navigate("pantallaInicio")
-                                1 -> navController.navigate("estadistiques")
+                                1 -> navController.navigate("usuarios") // Nueva pantalla
                                 2 -> navController.navigate("perfil")
                             }
                         },
@@ -125,11 +130,12 @@ fun Menuapp() {
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
             composable("estadistiques") { ValoracioScreen() }
+            composable("usuarios") { UsersScreen() } // Nueva pantalla de usuarios
             composable("perfil") {}
-            composable("añadirPeticion") { MakeRequest() } // Define la nueva pantalla aquí
+            composable("añadirPeticion") { MakeRequest() }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
-                val currentUserId = 2;
+                val currentUserId = 2
                 if (idPeticio != null) {
                     DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Pasar el ID del usuario actual
                 } else {
