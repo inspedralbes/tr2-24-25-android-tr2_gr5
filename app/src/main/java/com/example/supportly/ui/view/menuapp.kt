@@ -1,45 +1,44 @@
+// Menuapp.kt
 package com.example.supportly.ui.view
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import DetailsScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
+import com.example.supportly.ui.theme.DeepNavy
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import com.example.supportly.R
 import com.example.supportly.model.Categoria
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.network.RetrofitInstance.api
-import com.example.supportly.ui.theme.DeepNavy
+import com.example.supportly.ui.theme.AquaMist
 import com.example.supportly.ui.theme.MintCream
 import com.example.supportly.ui.theme.SkyBlue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.IOException
+import okio.IOException
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Menuapp() {
     val navController = rememberNavController()
@@ -52,33 +51,43 @@ fun Menuapp() {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(60.dp),
-                        contentAlignment = Alignment.Center
+                            .height(60.dp)
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.logo),
-                            contentDescription = "Logo",
-                            modifier = Modifier.size(120.dp)
-                        )
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.logo),
+                                contentDescription = "Logo",
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .padding(vertical = 8.dp)
+                            )
+                        }
                     }
                 },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = SkyBlue,
-                    titleContentColor = MintCream
-                ),
+                backgroundColor = SkyBlue,
+                contentColor = MintCream,
                 modifier = Modifier.height(100.dp)
             )
         },
         bottomBar = {
-            NavigationBar(
-                containerColor = Color.White,
+            BottomNavigation(
+                backgroundColor = Color.White,
                 contentColor = DeepNavy
             ) {
-                val items = listOf("Peticions", "Valoracions", "Perfil")
-                val icons = listOf(Icons.Filled.Menu, Icons.Filled.Star, Icons.Filled.AccountCircle)
+                val items = listOf("Peticions", "Usuarios", "Perfil")
+                val icons = listOf(
+                    Icons.Filled.Menu,
+                    Icons.Filled.Star,
+                    Icons.Filled.AccountCircle,
+                    Icons.Filled.AccountCircle // Cambiar el ícono si lo deseas
+                )
 
                 items.forEachIndexed { index, item ->
-                    NavigationBarItem(
+                    BottomNavigationItem(
                         icon = {
                             Icon(
                                 imageVector = icons[index],
@@ -91,19 +100,28 @@ fun Menuapp() {
                             selectedItem = index
                             when (index) {
                                 0 -> navController.navigate("pantallaInicio")
-                                1 -> navController.navigate("estadistiques")
+                                1 -> navController.navigate("usuarios") // Nueva pantalla
                                 2 -> navController.navigate("perfil")
                             }
                         },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.Blue,
-                            unselectedIconColor = Color.Gray,
-                            indicatorColor = Color.LightGray
-                        )
+                        selectedContentColor = Color.Blue,
+                        unselectedContentColor = Color.Gray
                     )
                 }
             }
-        }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate("añadirPeticion") // Navegar a la nueva pantalla
+                },
+                backgroundColor = AquaMist,
+                contentColor = Color.White
+            ) {
+                Icon(imageVector = Icons.Filled.Create, contentDescription = "Nuevo")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End // Ubicación del botón flotante
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -112,23 +130,37 @@ fun Menuapp() {
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
             composable("estadistiques") { ValoracioScreen() }
-            composable("perfil") { ProfileScreen(navController) }
-            composable("editarPerfil") { EditProfileScreen(navController) }
+            composable("usuarios") { UsersScreen() } // Nueva pantalla de usuarios
+            composable("perfil") {}
+            composable("añadirPeticion") { MakeRequest() }
+            composable("detalles/{id_peticio}") { backStackEntry ->
+                val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
+                val currentUserId = 2
+                if (idPeticio != null) {
+                    DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Pasar el ID del usuario actual
+                } else {
+                    // En caso de que el id no sea válido, muestra un mensaje de error
+                    Text("Petición no encontrada")
+                }
+            }
         }
     }
 }
 
 
+
 @Composable
 fun MenuScreen(navController: NavController) {
-    var peticioResponseList by remember { mutableStateOf<List<PeticioResponse>>(emptyList()) }
-    var categoriaList by remember { mutableStateOf<List<Categoria>>(emptyList()) }
+    var peticioResponseList: MutableList<PeticioResponse> by remember { mutableStateOf(mutableListOf()) }
+    var categoriaList: MutableList<Categoria> by remember { mutableStateOf(mutableListOf()) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
-    var selectedCategory by remember { mutableStateOf<Int?>(null) }
+    var selectedCategory by remember { mutableStateOf<Int?>(null) } // Almacena el id_categoria seleccionado
+    var searchQuery by remember { mutableStateOf("") } // Almacena el texto de búsqueda
 
     LaunchedEffect(key1 = Unit) {
         try {
+            // Cargar peticiones y categorías simultáneamente
             val peticions: List<PeticioResponse> = withContext(Dispatchers.IO) {
                 api.peticion().execute().body() ?: emptyList()
             }
@@ -136,8 +168,11 @@ fun MenuScreen(navController: NavController) {
                 api.categoria().execute().body() ?: emptyList()
             }
 
-            peticioResponseList = peticions
-            categoriaList = categories
+            peticioResponseList.clear()
+            peticioResponseList.addAll(peticions)
+
+            categoriaList.clear()
+            categoriaList.addAll(categories)
 
             isLoading = false
         } catch (e: IOException) {
@@ -155,28 +190,41 @@ fun MenuScreen(navController: NavController) {
         Text("Error: $error")
     } else {
         Column {
+            // Barra de búsqueda
+            TextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                label = { Text("Buscar por nombre") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+
+            // Mostrar filtro dinámico basado en las categorías
             CategoryFilter(
                 categories = categoriaList,
                 selectedCategory = selectedCategory,
                 onCategorySelected = { selectedCategory = it }
             )
 
-            val filteredList = if (selectedCategory == null) {
-                peticioResponseList
-            } else {
-                peticioResponseList.filter { it.id_categoria == selectedCategory }
+            // Filtrar lista según la categoría y el texto de búsqueda
+            val filteredList = peticioResponseList.filter { peticio ->
+                (selectedCategory == null || peticio.id_categoria == selectedCategory) &&
+                        (searchQuery.isEmpty() || peticio.nom_peticio.contains(searchQuery, ignoreCase = true))
             }
 
+            // Mostrar la lista filtrada
             LazyColumn {
                 items(filteredList) { item ->
                     MenuItem(item) {
-                        navController.navigate("detalles/${item.nom_peticio}")
+                        navController.navigate("detalles/${item.id_peticio}") // Usar el id_peticio
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun CategoryFilter(
@@ -207,17 +255,20 @@ fun CategoryFilter(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FilterChip(category: String, isSelected: Boolean, onClick: () -> Unit) {
-    Chip(
-        onClick = onClick,
-        colors = ChipDefaults.chipColors(
-            contentColor = Color.White
-        ),
-        modifier = Modifier.padding(4.dp)
+    Card(
+        modifier = Modifier
+            .clickable { onClick() }
+            .padding(4.dp),
+        backgroundColor = if (isSelected) Color.Gray else Color.LightGray,
+        elevation = 2.dp
     ) {
-        Text(text = category)
+        Text(
+            text = category,
+            modifier = Modifier.padding(8.dp),
+            color = if (isSelected) Color.White else Color.Black
+        )
     }
 }
 
@@ -227,12 +278,11 @@ fun MenuItem(item: PeticioResponse, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onClick() }
+            .clickable { onClick() },
+        elevation = 2.dp
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = item.nom_peticio, style = MaterialTheme.typography.titleLarge)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = item.descripcio)
+            Text(text = item.nom_peticio, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }

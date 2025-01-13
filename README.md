@@ -13,5 +13,5 @@ Un cop comenceu heu de canviar aquesta explicació amb la corresponent al vostre
  * Adreça del gestor de tasques (taiga, jira, trello...)
  * Adreça del prototip gràfic del projecte (Penpot, figma, moqups...)
  * URL de producció (quan la tingueu)
- * Estat: (explicació d'en quin punt està)
+ * Estat: (explicació d'en quin punt està).
   
