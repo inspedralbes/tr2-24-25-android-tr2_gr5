@@ -13,8 +13,10 @@ import com.example.supportly.ui.view.TipusRegister
 import com.example.supportly.ui.view.Menuapp
 import com.example.supportly.ui.view.ValoracioScreen
 import androidx.compose.material.Text
+import com.example.supportly.model.Usuari
 import com.example.supportly.ui.view.ChatsScreen
 import com.example.supportly.ui.view.EsperaScreen
+import com.example.supportly.ui.view.UsuariChat
 
 @Composable
 fun AppNavigation() {
@@ -76,9 +78,8 @@ fun AppNavigation() {
                 Text("Petición no encontrada")
             }
         }
-        composable("chatsScreen") {
-            ChatsScreen(sender = String.toString())
+        composable("chats_screen") {
+            ChatsScreen(sender = "user", navController = navController)
         }
-
     }
 }

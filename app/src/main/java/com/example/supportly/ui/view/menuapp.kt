@@ -140,7 +140,7 @@ fun Menuapp() {
             composable("perfil") {}
             composable("añadirPeticion") { MakeRequest() } // Define la nueva pantalla aquí
             composable("chatsScreen") { backStackEntry ->
-               ChatsScreen(sender = String.toString())
+               ChatsScreen(sender = String.toString(), navController = navController)
             }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
@@ -169,7 +169,6 @@ fun MenuScreen(navController: NavController) {
 
     LaunchedEffect(key1 = Unit) {
         try {
-            // Cargar peticiones y categorías simultáneamente
             val peticions: List<PeticioResponse> = withContext(Dispatchers.IO) {
                 api.peticion().execute().body() ?: emptyList()
             }

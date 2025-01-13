@@ -44,6 +44,9 @@ interface Mentoria {
     @GET("categoria")
     fun categoria(): Call<List<Categoria>>
 
+    @GET("usuaris")
+    fun usuaris(): Call<List<Usuari>>
+
     @POST("peticion")
     fun crearPeticion(@Body nuevaPeticion: PeticioResponse): Call<ResponseBody>
 
@@ -75,5 +78,6 @@ interface Mentoria {
         @Query("user1") user1: String,
         @Query("user2") user2: String
     ): Response<List<Message>>
+
 
 }
