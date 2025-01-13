@@ -92,6 +92,7 @@ fun CursoSelect(api: Mentoria, onCursoSelected: (Int) -> Unit) {
     }
 }
 
+
 fun sendMentorData(
     navController: NavController,
     nom: String,
