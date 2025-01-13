@@ -25,61 +25,63 @@ fun MainPage(
     onNavigateToLogin: () -> Unit,
     onNavigateToSelectResgister: () -> Unit,
 ) {
-    // Asegurando que el fondo azul ocupe toda la pantalla
+    // Fondo azul suave con un toque elegante
     Box(
         modifier = Modifier
-            .fillMaxSize()  // Asegura que el fondo azul ocupe toda la pantalla
-            .background(Color(0xFF2699E6)) // Fondo azul claro general
+            .fillMaxSize()
+            .background(Color(0xFFBFE1FF)) // Fondo azul suave
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()  // Asegura que la columna ocupe toda la pantalla
-                .padding(top = 20.dp),
+                .fillMaxSize()
+                .padding(top = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            // Imagen del logo
+            // Imagen del logo con bordes redondeados y sombra
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo de Supportly",
                 modifier = Modifier
                     .fillMaxWidth(0.6f)
-                    .height(180.dp)
-                    .padding(bottom = 40.dp),
+                    .height(200.dp)
+                    .padding(bottom = 40.dp)
+                    .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Fit
             )
 
-            // Contenedor de los botones con fondo más claro
+            // Contenedor para los botones con bordes redondeados, sombra y fondo suave
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.85f) // Ajustamos el ancho del contenedor
-                    .background(Color(0xFFB3D4FF)) // Fondo más claro para la caja interna
-                    .padding(vertical = 12.dp, horizontal = 20.dp) // Padding dentro de la caja
-                    .clip(RoundedCornerShape(16.dp)) // Bordes redondeados
+                    .fillMaxWidth(0.75f)
+                    .fillMaxHeight(0.50f)
+                    .background(Color(0xFFF3F8FF)) // Fondo azul claro
+                    .padding(vertical = 30.dp, horizontal = 40.dp) // Padding ajustado
+                    .clip(RoundedCornerShape(24.dp)) // Bordes más redondeados
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    // Botón Registrarse
+                    // Texto y botón de Registrarse
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "¿Aún no tienes cuenta?",
                             style = TextStyle(
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = Color.White
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color(0xFF004F92) // Azul oscuro para el texto
                             )
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(12.dp))  // Espacio reducido entre el texto y el botón
                         Button(
                             onClick = { onNavigateToSelectResgister() },
-                            colors = ButtonDefaults.buttonColors(Color(0xFF1A66CC)), // Fondo de los botones con azul fuerte
-                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(Color(0xFF007BFF)), // Botón azul vibrante
+                            shape = RoundedCornerShape(16.dp),
                             modifier = Modifier
                                 .fillMaxWidth(0.85f)
-                                .padding(0.dp)  // Aseguramos que no haya padding extra en los botones
+                                .padding(0.dp)
                         ) {
                             Text(
                                 text = "Regístrate",
@@ -90,26 +92,26 @@ fun MainPage(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))  // Espacio entre los botones
 
-                    // Botón Iniciar sesión
+                    // Texto y botón de Iniciar sesión
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "¿Ya tienes cuenta?",
                             style = TextStyle(
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = Color.White
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color(0xFF004F92) // Azul oscuro para el texto
                             )
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(12.dp))  // Espacio reducido entre el texto y el botón
                         Button(
                             onClick = { onNavigateToLogin() },
-                            colors = ButtonDefaults.buttonColors(Color(0xFF1A66CC)), // Fondo de los botones con azul fuerte
-                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(Color(0xFF007BFF)),
+                            shape = RoundedCornerShape(16.dp),
                             modifier = Modifier
                                 .fillMaxWidth(0.85f)
-                                .padding(0.dp)  // Aseguramos que no haya padding extra en los botones
+                                .padding(0.dp)
                         ) {
                             Text(
                                 text = "Inicia sesión",

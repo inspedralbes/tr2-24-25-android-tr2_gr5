@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Parte izquierda de la estrella -->
+    <path
+        android:fillColor="#FFCC00"
+        android:pathData="M12,2L9.09,6.26L2,9.27l5,4.87L5.82,21 12,17.27z" />
+</vector>

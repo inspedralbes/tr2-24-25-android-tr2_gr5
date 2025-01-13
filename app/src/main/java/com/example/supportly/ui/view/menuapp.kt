@@ -10,6 +10,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
@@ -206,7 +209,6 @@ fun EditProfileScreen(navController: NavController) {
                 )
             }
 
-
             item {
                 ImageSelection(
                     imageRes = R.drawable.squirtel,
@@ -214,7 +216,6 @@ fun EditProfileScreen(navController: NavController) {
                     onClick = { selectedImage = R.drawable.squirtel }
                 )
             }
-
 
             item {
                 ImageSelection(
@@ -247,7 +248,6 @@ fun EditProfileScreen(navController: NavController) {
                     onClick = { selectedImage = R.drawable.futbolamericano }
                 )
             }
-
 
         }
 
@@ -373,37 +373,33 @@ fun CategoryFilter(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FilterChip(category: String, isSelected: Boolean, onClick: () -> Unit) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) Color.Gray else Color.LightGray
+    Chip(
+        onClick = onClick,
+        colors = ChipDefaults.chipColors(
+            contentColor = Color.White,
+            containerColor = if (isSelected) DeepNavy else SkyBlue
         ),
-        modifier = Modifier
-            .clickable { onClick() }
-            .padding(4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = Modifier.padding(4.dp)
     ) {
-        Text(
-            text = category,
-            modifier = Modifier.padding(8.dp),
-            color = if (isSelected) Color.White else Color.Black
-        )
+        Text(text = category)
     }
 }
 
 @Composable
 fun MenuItem(item: PeticioResponse, onClick: () -> Unit) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .clickable { onClick() }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = item.nom_peticio, style = MaterialTheme.typography.bodyLarge)
+            Text(text = item.nom_peticio, style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = item.descripcio)
         }
     }
 }

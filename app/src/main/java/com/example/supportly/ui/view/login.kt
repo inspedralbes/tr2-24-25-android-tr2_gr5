@@ -70,7 +70,6 @@ fun Login(navController: NavController) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Campo de texto para la contraseña
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             var password by remember { mutableStateOf("") }
             var passwordVisible by remember { mutableStateOf(false) }
@@ -93,15 +92,12 @@ fun Login(navController: NavController) {
             )
         }
 
-
         Spacer(modifier = Modifier.height(40.dp))
 
-
-        // Botón de inicio de sesión
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button(
                 onClick = {
-                    navController.navigate("menuapp") // Navegar a la pantalla "menu"
+                    navController.navigate("menuapp")
                 },
                 colors = ButtonDefaults.buttonColors(Color.Blue),
                 modifier = Modifier
@@ -113,4 +109,3 @@ fun Login(navController: NavController) {
         }
     }
 }
-
