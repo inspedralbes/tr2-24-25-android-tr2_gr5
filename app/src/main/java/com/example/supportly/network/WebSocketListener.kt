@@ -45,7 +45,7 @@ class MyWebSocketListener(
                 }
             }
         }
-        mSocket.on("messageReceived") { args ->
+        mSocket.on("mRecibido") { args ->
             if (args.isNotEmpty()) {
                 val newMessage = args[0] as JSONObject
                 try {

@@ -12,11 +12,7 @@ import com.example.supportly.ui.view.RegisterMentor
 import com.example.supportly.ui.view.TipusRegister
 import com.example.supportly.ui.view.Menuapp
 import com.example.supportly.ui.view.ValoracioScreen
- // Importar la pantalla de detalles
-import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.supportly.ui.view.ChatViewModel
 import com.example.supportly.ui.view.ChatsScreen
 import com.example.supportly.ui.view.EsperaScreen
 
@@ -71,7 +67,6 @@ fun AppNavigation() {
             ValoracioScreen()
         }
 
-        // Nueva ruta para detalles de una petición
         composable("detalles/{id_peticio}") { backStackEntry ->
             val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
             val currentUserId = 2;
@@ -81,11 +76,8 @@ fun AppNavigation() {
                 Text("Petición no encontrada")
             }
         }
-        composable("chatsScreen/{sender}") { backStackEntry ->
-            val sender = backStackEntry.arguments?.getString("sender") ?: ""
-
-            val chatViewModel: ChatViewModel = viewModel()
-            ChatsScreen(viewModel = chatViewModel, sender = sender)
+        composable("chatsScreen") {
+            ChatsScreen(sender = String.toString())
         }
 
     }

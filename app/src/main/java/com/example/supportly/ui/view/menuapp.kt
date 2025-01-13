@@ -75,7 +75,7 @@ fun Menuapp() {
                 actions = {
                     IconButton(onClick = {
 
-                        navController.navigate("chatsScreen/$sender")
+                        navController.navigate("chatsScreen")
                     }) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.Chat, contentDescription = "Chat Icon")
                     }
@@ -139,11 +139,8 @@ fun Menuapp() {
             composable("estadistiques") { ValoracioScreen() }
             composable("perfil") {}
             composable("añadirPeticion") { MakeRequest() } // Define la nueva pantalla aquí
-            composable("chatsScreen/{sender}") { backStackEntry ->
-                val sender = backStackEntry.arguments?.getString("sender") ?: ""
-
-                val chatViewModel: ChatViewModel = viewModel()
-                ChatsScreen(viewModel = chatViewModel, sender = sender)
+            composable("chatsScreen") { backStackEntry ->
+               ChatsScreen(sender = String.toString())
             }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
@@ -151,7 +148,7 @@ fun Menuapp() {
                 if (idPeticio != null) {
                     DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Pasar el ID del usuario actual
                 } else {
-                    // En caso de que el id no sea válido, muestra un mensaje de error
+
                     Text("Petición no encontrada")
                 }
             }

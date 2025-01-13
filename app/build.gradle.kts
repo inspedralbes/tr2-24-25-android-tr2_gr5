@@ -95,6 +95,8 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.11.0")
     implementation ("io.socket:socket.io-client:2.1.1")
     implementation ("androidx.compose.material:material-icons-extended:1.1.0")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation ("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
     implementation(libs.car.ui.lib)
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.espresso.core)
