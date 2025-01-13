@@ -28,6 +28,7 @@ import retrofit2.Response
 fun Login(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var tipus by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
     // Obtener el contexto actual para el Toast
