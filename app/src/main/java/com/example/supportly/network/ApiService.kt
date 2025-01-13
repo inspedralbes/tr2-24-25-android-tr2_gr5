@@ -7,7 +7,6 @@ import com.example.supportly.model.Curs
 import com.example.supportly.model.Message
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.model.Usuari
-import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -43,6 +42,9 @@ interface Mentoria {
 
     @GET("categoria")
     fun categoria(): Call<List<Categoria>>
+
+    @GET("usuaris/{nom}")
+    fun buscarUsuari(@Path("nom") nom: String): Call<Usuari>
 
     @GET("usuaris")
     fun usuaris(): Call<List<Usuari>>

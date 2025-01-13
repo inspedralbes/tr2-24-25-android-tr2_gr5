@@ -1,5 +1,6 @@
 package com.example.supportly.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.model.Usuari
+import com.example.supportly.network.Mentoria
 import com.example.supportly.network.RetrofitInstance
 import com.example.supportly.network.RetrofitInstance.api
 import kotlinx.coroutines.Dispatchers
@@ -114,11 +116,34 @@ fun UserItem(user: Usuari, navController: NavController) {
             .border(1.dp, MaterialTheme.colors.onSurface)
             .padding(16.dp)
             .clickable {
-                navController.navigate("usuari_chat/${user.nom}")
+                verificarUsuarioYNavegar(user.nom, navController)
             }
     ) {
         Text(text = "Nom: ${user.nom} ${user.cognom}")
         Text(text = "Correu Alumne: ${user.correu_alumne}")
     }
 }
+
+fun verificarUsuarioYNavegar(userName: String, navController: NavController) {
+    api.buscarUsuari(userName).enqueue(object : Callback<Usuari> {
+        override fun onResponse(call: Call<Usuari>, response: Response<Usuari>) {
+            if (response.isSuccessful) {
+                val usuario = response.body()
+                if (usuario != null) {
+                    navController.navigate("usuari_chat/$userName")
+                } else {
+                    // Mostrar mensaje de error si el usuario no existe
+                    println("Usuario no encontrado")
+                }
+            } else {
+                println("Error al buscar usuario en la API")
+            }
+        }
+
+        override fun onFailure(call: Call<Usuari>, t: Throwable) {
+            println("Error al llamar a la API: ${t.message}")
+        }
+    })
+}
+
 

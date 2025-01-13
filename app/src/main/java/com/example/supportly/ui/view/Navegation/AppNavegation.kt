@@ -1,6 +1,7 @@
 package com.example.supportly.ui.view.Navegation
 
 import DetailsScreen
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,6 +14,8 @@ import com.example.supportly.ui.view.TipusRegister
 import com.example.supportly.ui.view.Menuapp
 import com.example.supportly.ui.view.ValoracioScreen
 import androidx.compose.material.Text
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.supportly.model.Usuari
 import com.example.supportly.ui.view.ChatsScreen
 import com.example.supportly.ui.view.EsperaScreen
@@ -81,5 +84,13 @@ fun AppNavigation() {
         composable("chats_screen") {
             ChatsScreen(sender = "user", navController = navController)
         }
-    }
+        composable("usuari_chat/{nom}") { backStackEntry ->
+            val nom = backStackEntry.arguments?.getString("nom")
+            val currentUserNom = "null";
+            if (nom != null) {
+                UsuariChat(userName = nom, currentUserNom = currentUserNom)
+            }
+
+        }
+}
 }
