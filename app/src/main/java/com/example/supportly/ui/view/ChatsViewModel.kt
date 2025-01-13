@@ -19,7 +19,7 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
             try {
                 val response = chatRepository.sendMessage(sender, receiver, message)
                 if (response.isSuccessful) {
-                    _messages.value = _messages.value?.plus(response.body()!!)  // Agregar el nuevo mensaje
+                    _messages.value = _messages.value?.plus(response.body()!!)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

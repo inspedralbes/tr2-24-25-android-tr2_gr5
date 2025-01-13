@@ -53,7 +53,6 @@ fun Login(navController: NavController) {
 
         Spacer(modifier = Modifier.height(60.dp))
 
-        // Campo de texto para el correo electrónico
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             var email by remember { mutableStateOf("") }
             TextField(

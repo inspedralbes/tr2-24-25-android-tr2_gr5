@@ -46,8 +46,7 @@ import okio.IOException
 fun Menuapp() {
     val navController = rememberNavController()
     var selectedItem by remember { mutableStateOf(0) }
-    val sender = "usuarioActual"  // Deberías obtener el valor real de usuario actual
-    val receiver = "usuarioReceptor" // Deberías obtener el valor real del receptor
+    val sender = "usuarioActual"
 
     Scaffold(
         topBar = {
@@ -76,7 +75,7 @@ fun Menuapp() {
                 actions = {
                     IconButton(onClick = {
 
-                        navController.navigate("chatsScreen/$sender/$receiver")
+                        navController.navigate("chatsScreen/$sender")
                     }) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.Chat, contentDescription = "Chat Icon")
                     }
@@ -140,12 +139,11 @@ fun Menuapp() {
             composable("estadistiques") { ValoracioScreen() }
             composable("perfil") {}
             composable("añadirPeticion") { MakeRequest() } // Define la nueva pantalla aquí
-            composable("chatsScreen/{sender}/{receiver}") { backStackEntry ->
+            composable("chatsScreen/{sender}") { backStackEntry ->
                 val sender = backStackEntry.arguments?.getString("sender") ?: ""
-                val receiver = backStackEntry.arguments?.getString("receiver") ?: ""
 
                 val chatViewModel: ChatViewModel = viewModel()
-                ChatsScreen(viewModel = chatViewModel, sender = sender, receiver = receiver)
+                ChatsScreen(viewModel = chatViewModel, sender = sender)
             }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()

@@ -81,13 +81,11 @@ fun AppNavigation() {
                 Text("Petición no encontrada")
             }
         }
-        composable("chatsScreen/{sender}/{receiver}") { backStackEntry ->
+        composable("chatsScreen/{sender}") { backStackEntry ->
             val sender = backStackEntry.arguments?.getString("sender") ?: ""
-            val receiver = backStackEntry.arguments?.getString("receiver") ?: ""
 
-            // Aquí pasamos el sender y receiver al ViewModel
             val chatViewModel: ChatViewModel = viewModel()
-            ChatsScreen(viewModel = chatViewModel, sender = sender, receiver = receiver)
+            ChatsScreen(viewModel = chatViewModel, sender = sender)
         }
 
     }

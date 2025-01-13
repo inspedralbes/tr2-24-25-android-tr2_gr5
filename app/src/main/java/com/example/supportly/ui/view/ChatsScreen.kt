@@ -13,6 +13,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
@@ -34,46 +35,42 @@ import androidx.navigation.NavController
 import com.example.supportly.model.Message
 
 @Composable
-fun ChatsScreen(viewModel: ChatViewModel, sender: String, receiver: String) {
-
-    // Observamos los mensajes
+fun ChatsScreen(viewModel: ChatViewModel, sender: String) {
+    var receiver by remember { mutableStateOf("") }
     val messages by viewModel.messages.observeAsState(emptyList())
 
-    // Cargar los mensajes
-    LaunchedEffect(key1 = sender, key2 = receiver) {
-        viewModel.loadMessages(sender, receiver)
-    }
+    Column {
+        OutlinedTextField(
+            value = receiver,
+            onValueChange = { newValue ->
+                receiver = newValue
+                if (newValue.isNotEmpty()) {
+                    viewModel.loadMessages(sender, receiver)
+                }
+            },
+            label = { Text("Buscar receptor") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-    // UI
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // Mostrar los mensajes
+        // Mostrar mensajes
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(messages) { message ->
-                Text(text = "${message.sender}: ${message.message}")
+                Text("${message.sender}: ${message.message}")
             }
         }
 
-        // Caja de texto y botón para enviar mensaje
-        var newMessage by remember { mutableStateOf("") }
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            TextField(
-                value = newMessage,
-                onValueChange = { newMessage = it },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
-                label = { Text("Nuevo mensaje") }
+        // Campo de entrada para enviar mensajes
+        var messageText by remember { mutableStateOf("") }
+        Row {
+            OutlinedTextField(
+                value = messageText,
+                onValueChange = { messageText = it },
+                modifier = Modifier.weight(1f)
             )
-
             Button(onClick = {
-                if (newMessage.isNotEmpty()) {
-                    viewModel.sendMessage(sender, receiver, newMessage)
-                    newMessage = ""
+                if (receiver.isNotEmpty() && messageText.isNotEmpty()) {
+                    viewModel.sendMessage(sender, receiver, messageText)
+                    messageText = ""
                 }
             }) {
                 Text("Enviar")
@@ -81,4 +78,3 @@ fun ChatsScreen(viewModel: ChatViewModel, sender: String, receiver: String) {
         }
     }
 }
-

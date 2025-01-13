@@ -49,7 +49,6 @@ class MyWebSocketListener(
             if (args.isNotEmpty()) {
                 val newMessage = args[0] as JSONObject
                 try {
-                    // Extraer los datos del mensaje
                     val sender = newMessage.getString("sender")
                     val receiver = newMessage.getString("receiver")
                     val message = newMessage.getString("message")
