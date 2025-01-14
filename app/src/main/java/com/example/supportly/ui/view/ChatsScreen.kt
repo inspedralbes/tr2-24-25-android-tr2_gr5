@@ -6,26 +6,20 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,16 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.supportly.model.PeticioResponse
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.supportly.model.Usuari
-import com.example.supportly.network.Mentoria
-import com.example.supportly.network.RetrofitInstance
 import com.example.supportly.network.RetrofitInstance.api
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,31 +45,54 @@ fun ChatsScreen(sender: String, navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
     var users by remember { mutableStateOf<List<Usuari>>(emptyList()) }
 
+    // El 'navController' ya se pasa como parámetro, no necesitas crear uno nuevo.
+    val navController = rememberNavController()
+
+    // Configuración de NavHost
+    NavHost(
+        navController = navController,
+        startDestination = "chats_screen"
+    ) {
+        composable("chats_screen") {
+            // Pantalla de chats (aquí va tu contenido)
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Agregar contenido de la pantalla de chats si lo deseas
+            }
+        }
+
+        composable("tusmuertos") {
+            // Pantalla de tus muertos
+            TusMuertosScreen()
+        }
+    }
+
+    // LaunchedEffect para hacer la llamada a la API y obtener usuarios
     LaunchedEffect(Unit) {
         api.usuaris().enqueue(object : Callback<List<Usuari>> {
-            override fun onResponse(call: Call<List<Usuari>>, response: Response<List<Usuari>>) {
+            override fun onResponse(
+                call: Call<List<Usuari>>,
+                response: Response<List<Usuari>>
+            ) {
                 if (response.isSuccessful) {
-
                     val filteredUsers = response.body()?.filter {
                         it.correu_alumne != null && it.correu_alumne.isNotEmpty()
                     } ?: emptyList()
-                    // Si la respuesta es exitosa, actualizamos la lista de usuarios
                     users = filteredUsers
                 }
             }
 
             override fun onFailure(call: Call<List<Usuari>>, t: Throwable) {
-                // Manejo de errores en caso de que la llamada falle
                 println("Error en la llamada: ${t.message}")
             }
         })
     }
 
-    // Filtrar usuarios por el nombre ingresado
+    // Filtrar usuarios
     val filteredUsers = users.filter {
         it.nom.contains(searchQuery, ignoreCase = true)
     }
 
+    // UI principal de la pantalla "ChatsScreen"
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,60 +104,70 @@ fun ChatsScreen(sender: String, navController: NavController) {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // TextField para ingresar el nombre y filtrar los usuarios
-        TextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-            singleLine = true
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                singleLine = true
+            )
 
-        // Mostrar la lista de usuarios filtrada
+            IconButton(
+                onClick = {
+                    // Navegar a "TusMuertosScreen"
+                    navController.navigate("tusmuertos") {
+                        // Eliminamos la pantalla actual "chats_screen" de la pila
+                        popUpTo("chats_screen") { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Ir a la siguiente pantalla"
+                )
+            }
+        }
+
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(filteredUsers) { user ->
-                UserItem(user = user, navController = navController) // Pasa el objeto 'user', no la clase
+                UserItemWithIcon(user = user, navController = navController)
             }
         }
     }
 }
-
 @Composable
-fun UserItem(user: Usuari, navController: NavController) {
-    Column(
+fun UserItemWithIcon(user: Usuari, navController: NavController) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .border(1.dp, MaterialTheme.colors.onSurface)
             .padding(16.dp)
             .clickable {
-                verificarUsuarioYNavegar(user.nom, navController)
+                // Al hacer clic, navegar a "TusMuertosScreen" reemplazando la pantalla actual
+                navController.navigate("tusmuertos") {
+                    // Eliminamos la pantalla actual "chats_screen" de la pila
+                    popUpTo("chats_screen") { inclusive = true }
+                    launchSingleTop = true
+                }
             }
     ) {
-        Text(text = "Nom: ${user.nom} ${user.cognom}")
-        Text(text = "Correu Alumne: ${user.correu_alumne}")
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(text = "Nom: ${user.nom} ${user.cognom}")
+            Text(text = "Correu Alumne: ${user.correu_alumne}")
+        }
     }
 }
-
-fun verificarUsuarioYNavegar(userName: String, navController: NavController) {
-    api.buscarUsuari(userName).enqueue(object : Callback<Usuari> {
-        override fun onResponse(call: Call<Usuari>, response: Response<Usuari>) {
-            if (response.isSuccessful) {
-                val usuario = response.body()
-                if (usuario != null) {
-                    navController.navigate("usuari_chat/$userName")
-                } else {
-                    // Mostrar mensaje de error si el usuario no existe
-                    println("Usuario no encontrado")
-                }
-            } else {
-                println("Error al buscar usuario en la API")
-            }
-        }
-
-        override fun onFailure(call: Call<Usuari>, t: Throwable) {
-            println("Error al llamar a la API: ${t.message}")
-        }
-    })
-}
-
 

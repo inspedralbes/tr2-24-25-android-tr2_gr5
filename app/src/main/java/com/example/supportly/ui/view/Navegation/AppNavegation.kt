@@ -19,7 +19,7 @@ import androidx.navigation.navArgument
 import com.example.supportly.model.Usuari
 import com.example.supportly.ui.view.ChatsScreen
 import com.example.supportly.ui.view.EsperaScreen
-import com.example.supportly.ui.view.UsuariChat
+import com.example.supportly.ui.view.TusMuertosScreen
 
 @Composable
 fun AppNavigation() {
@@ -83,14 +83,6 @@ fun AppNavigation() {
         }
         composable("chats_screen") {
             ChatsScreen(sender = "user", navController = navController)
-        }
-        composable("usuari_chat/{nom}") { backStackEntry ->
-            val nom = backStackEntry.arguments?.getString("nom")
-            val currentUserNom = "null";
-            if (nom != null) {
-                UsuariChat(userName = nom, currentUserNom = currentUserNom)
-            }
-
         }
 }
 }
