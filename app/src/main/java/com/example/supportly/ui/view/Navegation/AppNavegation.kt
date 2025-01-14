@@ -1,21 +1,14 @@
 package com.example.supportly.ui.view.Navegation
 
 import DetailsScreen
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.supportly.ui.view.Login
-import com.example.supportly.ui.view.MainPage
-import com.example.supportly.ui.view.RegisterAlumne
-import com.example.supportly.ui.view.RegisterMentor
-import com.example.supportly.ui.view.TipusRegister
-import com.example.supportly.ui.view.Menuapp
-import com.example.supportly.ui.view.ValoracioScreen
- // Importar la pantalla de detalles
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
-import com.example.supportly.ui.view.EsperaScreen
+import androidx.navigation.navArgument
+import com.example.supportly.ui.view.*
 
 @Composable
 fun AppNavigation() {
@@ -56,27 +49,41 @@ fun AppNavigation() {
             RegisterAlumne(navController = navController)
         }
 
-        composable("menuapp") {
-            Menuapp()
+        // Ruta de 'menuapp' con argumentos
+        composable(
+            "menuapp/{email}/{password}",
+            arguments = listOf(
+                navArgument("email") { type = NavType.StringType },
+                navArgument("password") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            val password = backStackEntry.arguments?.getString("password") ?: ""
+            Menuapp(email = email, password = password)
         }
 
         composable("espera") {
-            EsperaScreen(navController)
+            EsperaScreen(navController = navController)
         }
 
-        // Añadir la ruta para la pantalla de Valoracio
+        // Ruta para estadísticas
         composable("estadistiques") {
-            ValoracioScreen() // Redirige a la pantalla de Valoracio
+            ValoracioScreen()
         }
 
-        // Nueva ruta para detalles de una petición
-        composable("detalles/{id_peticio}") { backStackEntry ->
-            val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
-            val currentUserId = 2;
+        // Ruta para detalles de una petición
+        composable(
+            "detalles/{id_peticio}",
+            arguments = listOf(
+                navArgument("id_peticio") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val idPeticio = backStackEntry.arguments?.getInt("id_peticio")
+            val currentUserId = 2 // Ejemplo de ID de usuario actual
             if (idPeticio != null) {
-                DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Llamar a DetailsScreen con el id_peticio
+                DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId)
             } else {
-                // En caso de que el id no sea válido, muestra un mensaje de error
+                // En caso de que el ID no sea válido
                 Text("Petición no encontrada")
             }
         }

@@ -127,19 +127,21 @@ fun UsersScreen() {
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(filteredList) { index, user -> // Usa itemsIndexed para obtener el índice
+                items(filteredList) { user ->
+                    val position = userList.indexOf(user) + 1 // Calcula la posición basado en la lista original
                     val isInTop10 = userList.contains(user)
-                    UserCard(user = user, position = index + 1, isInTop10 = isInTop10)
+                    UserCard(user = user, position = position, isInTop10 = isInTop10)
                 }
             }
         }
     }
 }
 
+
 // Tarjeta para mostrar la información de un usuario
 @Composable
 fun UserCard(user: Usuari, position: Int, isInTop10: Boolean) {
-    androidx.compose.material.Card(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
@@ -168,11 +170,23 @@ fun UserCard(user: Usuari, position: Int, isInTop10: Boolean) {
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = position.toString(),
-                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                    color = if (isInTop10) Color.Black else Color.White
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Número de posición
+                    Text(
+                        text = position.toString(),
+                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                        color = if (isInTop10) Color.Black else Color.White
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    // Trofeo para las posiciones 1, 2 y 3
+                    when (position) {
+                        1 -> Text("🏆", fontSize = 16.sp) // Oro
+                        2 -> Text("🥈", fontSize = 16.sp) // Plata
+                        3 -> Text("🥉", fontSize = 16.sp) // Bronce
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.width(16.dp))

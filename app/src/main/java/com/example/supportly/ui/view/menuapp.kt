@@ -27,7 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import com.example.supportly.R
 import com.example.supportly.model.Categoria
 import com.example.supportly.model.PeticioResponse
@@ -40,9 +42,9 @@ import kotlinx.coroutines.withContext
 import okio.IOException
 
 @Composable
-fun Menuapp() {
+fun Menuapp(email: String, password: String) {
     val navController = rememberNavController()
-    var selectedItem by remember { mutableStateOf(0) }
+    var selectedItem by remember { mutableIntStateOf(0) }
 
     Scaffold(
         topBar = {
@@ -101,11 +103,14 @@ fun Menuapp() {
                             when (index) {
                                 0 -> navController.navigate("pantallaInicio")
                                 1 -> navController.navigate("usuarios") // Nueva pantalla
-                                2 -> navController.navigate("perfil")
+                                2 -> {
+                                    // Navegar a perfil con los parámetros
+                                    navController.navigate("perfil/$email/$password")
+                                }
                             }
                         },
-                        selectedContentColor = Color.Blue,
-                        unselectedContentColor = Color.Gray
+                        selectedContentColor = Color(0xFF2196F3), // Azul
+                        unselectedContentColor = Color(0xFF9E9E9E) // Gris
                     )
                 }
             }
@@ -131,21 +136,31 @@ fun Menuapp() {
             composable("pantallaInicio") { MenuScreen(navController) }
             composable("estadistiques") { ValoracioScreen() }
             composable("usuarios") { UsersScreen() } // Nueva pantalla de usuarios
-            composable("perfil") {}
+            composable(
+                "perfil/{email}/{password}",
+                arguments = listOf(
+                    navArgument("email") { type = NavType.StringType },
+                    navArgument("password") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val email = backStackEntry.arguments?.getString("email") ?: ""
+                val password = backStackEntry.arguments?.getString("password") ?: ""
+                ProfileScreen(email = email, password = password)
+            }
             composable("añadirPeticion") { MakeRequest() }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
                 val currentUserId = 2
                 if (idPeticio != null) {
-                    DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Pasar el ID del usuario actual
+                    DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId)
                 } else {
-                    // En caso de que el id no sea válido, muestra un mensaje de error
                     Text("Petición no encontrada")
                 }
             }
         }
     }
 }
+
 
 
 
