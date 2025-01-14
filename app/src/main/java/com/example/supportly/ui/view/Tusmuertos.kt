@@ -24,9 +24,7 @@ import androidx.compose.ui.text.TextRange
 
 @Composable
 fun TusMuertosScreen() {
-    // Estado para el texto del mensaje
     var messageText by remember { mutableStateOf("") }
-    // Lista de mensajes (puedes conectar esto con una base de datos o API)
     var messages by remember { mutableStateOf(listOf("Hola, ¿cómo estás?", "Bien, gracias. ¿Y tú?", "Todo bien!")) }
 
     Column(

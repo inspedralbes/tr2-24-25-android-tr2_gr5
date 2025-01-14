@@ -76,7 +76,10 @@ fun AppNavigation() {
             val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
             val currentUserId = 2;
             if (idPeticio != null) {
-                DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Llamar a DetailsScreen con el id_peticio
+                DetailsScreen(
+                    peticionId = idPeticio,
+                    currentUserId = currentUserId
+                ) // Llamar a DetailsScreen con el id_peticio
             } else {
                 Text("Petición no encontrada")
             }
@@ -84,5 +87,9 @@ fun AppNavigation() {
         composable("chats_screen") {
             ChatsScreen(sender = "user", navController = navController)
         }
+        composable("tusmuertos") {
+            TusMuertosScreen()
+        }
+    }
 }
-}
+

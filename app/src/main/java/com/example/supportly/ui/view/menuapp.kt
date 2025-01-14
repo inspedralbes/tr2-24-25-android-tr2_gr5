@@ -3,6 +3,7 @@ package com.example.supportly.ui.view
 
 import DetailsScreen
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,6 +35,7 @@ import androidx.navigation.compose.*
 import com.example.supportly.R
 import com.example.supportly.model.Categoria
 import com.example.supportly.model.PeticioResponse
+import com.example.supportly.model.Usuari
 import com.example.supportly.network.RetrofitInstance.api
 import com.example.supportly.ui.theme.AquaMist
 import com.example.supportly.ui.theme.MintCream
@@ -41,12 +43,16 @@ import com.example.supportly.ui.theme.SkyBlue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.IOException
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @Composable
 fun Menuapp() {
     val navController = rememberNavController()
     var selectedItem by remember { mutableStateOf(0) }
     val sender = "usuarioActual"
+    val currentBackStackEntry = navController.currentBackStackEntryAsState()
 
     Scaffold(
         topBar = {
@@ -66,7 +72,7 @@ fun Menuapp() {
                                 painter = painterResource(id = R.drawable.logo),
                                 contentDescription = "Logo",
                                 modifier = Modifier
-                                    .size(120.dp)
+                                    .size(150.dp)
                                     .padding(vertical = 8.dp)
                             )
                         }
@@ -118,14 +124,16 @@ fun Menuapp() {
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate("añadirPeticion") // Navegar a la nueva pantalla
-                },
-                backgroundColor = AquaMist,
-                contentColor = Color.White
-            ) {
-                Icon(imageVector = Icons.Filled.Create, contentDescription = "Nuevo")
+            if (currentBackStackEntry.value?.destination?.route != "tusmuertos") {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate("añadirPeticion") // Navegar a la nueva pantalla
+                    },
+                    backgroundColor = AquaMist,
+                    contentColor = Color.White
+                ) {
+                    Icon(imageVector = Icons.Filled.Create, contentDescription = "Nuevo")
+                }
             }
         },
         floatingActionButtonPosition = FabPosition.End // Ubicación del botón flotante
@@ -142,6 +150,9 @@ fun Menuapp() {
             composable("chatsScreen") { backStackEntry ->
                ChatsScreen(sender = String.toString(), navController = navController)
             }
+            composable("tusmuertos") {
+                TusMuertosScreen()
+            }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
                 val currentUserId = 2;
@@ -156,6 +167,104 @@ fun Menuapp() {
     }
 }
 
+@Composable
+fun ChatsScreen(sender: String, navController: NavController) {
+    var messageText by remember { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") }
+    var users by remember { mutableStateOf<List<Usuari>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        api.usuaris().enqueue(object : Callback<List<Usuari>> {
+            override fun onResponse(
+                call: Call<List<Usuari>>,
+                response: Response<List<Usuari>>
+            ) {
+                if (response.isSuccessful) {
+                    val filteredUsers = response.body()?.filter {
+                        it.correu_alumne != null && it.correu_alumne.isNotEmpty()
+                    } ?: emptyList()
+                    users = filteredUsers
+                }
+            }
+
+            override fun onFailure(call: Call<List<Usuari>>, t: Throwable) {
+                println("Error en la llamada: ${t.message}")
+            }
+        })
+    }
+
+    // Filtrar usuarios
+    val filteredUsers = users.filter {
+        it.correu_alumne.contains(searchQuery, ignoreCase = true)
+    }
+
+    // UI principal de la pantalla "ChatsScreen"
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        androidx.compose.material.Text(
+            text = "Buscar usuari per nom",
+            style = androidx.compose.material.MaterialTheme.typography.h5,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                singleLine = true
+            )
+        }
+
+        // Botón para navegar a la pantalla de chat con una persona
+        Button(
+            onClick = {
+                // Navegar a la pantalla de chat con una persona específica
+                navController.navigate("tusmuertos") // Ajusta "chat_screen" con el destino deseado
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
+        ) {
+            androidx.compose.material.Text("Ir a chat con usuario")
+        }
+
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(filteredUsers) { user ->
+                UserItemWithIcon(user = user)
+            }
+        }
+    }
+}
+
+@Composable
+fun UserItemWithIcon(user: Usuari) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .border(1.dp, androidx.compose.material.MaterialTheme.colors.onSurface)
+            .padding(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            androidx.compose.material.Text(text = "Nom: ${user.nom} ${user.cognom}")
+            androidx.compose.material.Text(text = "Correu Alumne: ${user.correu_alumne}")
+        }
+    }
+}
 
 
 @Composable
@@ -165,7 +274,7 @@ fun MenuScreen(navController: NavController) {
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var selectedCategory by remember { mutableStateOf<Int?>(null) } // Almacena el id_categoria seleccionado
-    var searchQuery by remember { mutableStateOf("") } // Almacena el texto de búsqueda
+    var searchQuery by remember { mutableStateOf("") }
 
     LaunchedEffect(key1 = Unit) {
         try {
