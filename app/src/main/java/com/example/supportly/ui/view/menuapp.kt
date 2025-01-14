@@ -82,8 +82,7 @@ fun Menuapp() {
                 val icons = listOf(
                     Icons.Filled.Menu,
                     Icons.Filled.Star,
-                    Icons.Filled.AccountCircle,
-                    Icons.Filled.AccountCircle // Cambiar el ícono si lo deseas
+                    Icons.Filled.AccountCircle
                 )
 
                 items.forEachIndexed { index, item ->
@@ -100,7 +99,7 @@ fun Menuapp() {
                             selectedItem = index
                             when (index) {
                                 0 -> navController.navigate("pantallaInicio")
-                                1 -> navController.navigate("usuarios") // Nueva pantalla
+                                1 -> navController.navigate("usuarios")
                                 2 -> navController.navigate("perfil")
                             }
                         },
@@ -113,7 +112,7 @@ fun Menuapp() {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate("añadirPeticion") // Navegar a la nueva pantalla
+                    navController.navigate("añadirPeticion")
                 },
                 backgroundColor = AquaMist,
                 contentColor = Color.White
@@ -121,7 +120,7 @@ fun Menuapp() {
                 Icon(imageVector = Icons.Filled.Create, contentDescription = "Nuevo")
             }
         },
-        floatingActionButtonPosition = FabPosition.End // Ubicación del botón flotante
+        floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -130,16 +129,15 @@ fun Menuapp() {
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
             composable("estadistiques") { ValoracioScreen() }
-            composable("usuarios") { UsersScreen() } // Nueva pantalla de usuarios
-            composable("perfil") {}
+            composable("usuarios") { UsersScreen() }
+            composable("perfil") { ProfileScreen(navController) }
             composable("añadirPeticion") { MakeRequest() }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
                 val currentUserId = 2
                 if (idPeticio != null) {
-                    DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Pasar el ID del usuario actual
+                    DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId)
                 } else {
-                    // En caso de que el id no sea válido, muestra un mensaje de error
                     Text("Petición no encontrada")
                 }
             }
@@ -147,20 +145,17 @@ fun Menuapp() {
     }
 }
 
-
-
 @Composable
 fun MenuScreen(navController: NavController) {
     var peticioResponseList: MutableList<PeticioResponse> by remember { mutableStateOf(mutableListOf()) }
     var categoriaList: MutableList<Categoria> by remember { mutableStateOf(mutableListOf()) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
-    var selectedCategory by remember { mutableStateOf<Int?>(null) } // Almacena el id_categoria seleccionado
-    var searchQuery by remember { mutableStateOf("") } // Almacena el texto de búsqueda
+    var selectedCategory by remember { mutableStateOf<Int?>(null) }
+    var searchQuery by remember { mutableStateOf("") }
 
     LaunchedEffect(key1 = Unit) {
         try {
-            // Cargar peticiones y categorías simultáneamente
             val peticions: List<PeticioResponse> = withContext(Dispatchers.IO) {
                 api.peticion().execute().body() ?: emptyList()
             }
@@ -190,7 +185,6 @@ fun MenuScreen(navController: NavController) {
         Text("Error: $error")
     } else {
         Column {
-            // Barra de búsqueda
             TextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
@@ -200,31 +194,27 @@ fun MenuScreen(navController: NavController) {
                     .padding(8.dp)
             )
 
-            // Mostrar filtro dinámico basado en las categorías
             CategoryFilter(
                 categories = categoriaList,
                 selectedCategory = selectedCategory,
                 onCategorySelected = { selectedCategory = it }
             )
 
-            // Filtrar lista según la categoría y el texto de búsqueda
             val filteredList = peticioResponseList.filter { peticio ->
                 (selectedCategory == null || peticio.id_categoria == selectedCategory) &&
                         (searchQuery.isEmpty() || peticio.nom_peticio.contains(searchQuery, ignoreCase = true))
             }
 
-            // Mostrar la lista filtrada
             LazyColumn {
                 items(filteredList) { item ->
                     MenuItem(item) {
-                        navController.navigate("detalles/${item.id_peticio}") // Usar el id_peticio
+                        navController.navigate("detalles/${item.id_peticio}")
                     }
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun CategoryFilter(

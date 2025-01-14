@@ -24,11 +24,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.supportly.R
 
+// Función auxiliar para manejar excepciones al cargar recursos.
+fun safePainterResource(id: Int, fallback: Int): Int {
+    return try {
+        id // Retorna el ID original si no hay errores
+    } catch (e: Exception) {
+        fallback // Retorna el ID de respaldo en caso de error
+    }
+}
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -40,11 +49,16 @@ fun ProfileScreen(navController: NavController) {
         verticalArrangement = Arrangement.Top
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_person),
+            painter = painterResource(
+                id = safePainterResource(
+                    id = R.drawable.ic_person,
+                    fallback = R.drawable.ic_person // Imagen de respaldo
+                )
+            ),
             contentDescription = "Foto de perfil",
             modifier = Modifier
-                .size(120.dp) // Tamaño igual para todas las imágenes
-                .clip(CircleShape) // Forma circular
+                .size(120.dp)
+                .clip(CircleShape)
                 .padding(16.dp)
         )
 
@@ -86,11 +100,16 @@ fun EditProfileScreen(navController: NavController) {
         verticalArrangement = Arrangement.Top
     ) {
         Image(
-            painter = painterResource(id = selectedImage),
+            painter = painterResource(
+                id = safePainterResource(
+                    id = selectedImage,
+                    fallback = R.drawable.ic_person
+                )
+            ),
             contentDescription = "Foto de perfil",
             modifier = Modifier
-                .size(120.dp) // Tamaño igual para todas las imágenes
-                .clip(CircleShape) // Forma circular
+                .size(120.dp)
+                .clip(CircleShape)
                 .padding(16.dp)
         )
 
@@ -104,7 +123,6 @@ fun EditProfileScreen(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-
             item {
                 ImageSelection(
                     imageRes = R.drawable.bulbasour,
@@ -160,7 +178,6 @@ fun EditProfileScreen(navController: NavController) {
                     onClick = { selectedImage = R.drawable.futbolamericano }
                 )
             }
-
         }
 
         Button(
@@ -188,11 +205,16 @@ fun ImageSelection(imageRes: Int, isSelected: Boolean, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Image(
-            painter = painterResource(id = imageRes),
+            painter = painterResource(
+                id = safePainterResource(
+                    id = imageRes,
+                    fallback = R.drawable.ic_person
+                )
+            ),
             contentDescription = "Imagen seleccionada",
             modifier = Modifier
-                .size(80.dp) // Tamaño igual para todas las imágenes
-                .clip(CircleShape) // Forma circular
+                .size(80.dp)
+                .clip(CircleShape)
         )
     }
 }

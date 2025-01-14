@@ -112,6 +112,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.3") // Agregada por diferencia
     implementation(libs.converter.scalars) // Agregada por diferencia
     implementation("androidx.compose.material3:material3:1.1.0") // Versión estable agregada
+    implementation ("androidx.compose.runtime:runtime-saveable:<versión>")
+
 
     // Room Database
     val room_version = "2.6.1"
