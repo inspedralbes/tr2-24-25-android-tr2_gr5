@@ -1,6 +1,8 @@
 package com.example.supportly.ui.view
 
+import android.os.Process
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -37,49 +39,59 @@ fun safePainterResource(id: Int, fallback: Int): Int {
 }
 
 @Composable
-fun ProfileScreen(navController: NavController, userName: String = "Nombre de Usuario", userEmail: String = "usuario@gmail.com") {
+fun ProfileScreen(navController: NavController, userName: String = "usuario@gmail.com", userEmail: String = "") {
     var selectedImage by rememberSaveable { mutableStateOf(R.drawable.ic_person) }
+    var savedImage by rememberSaveable { mutableStateOf(R.drawable.ic_person) } // Imagen guardada
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
         // Imagen de perfil seleccionada
         Image(
-            painter = painterResource(
-                id = safePainterResource(
-                    id = selectedImage,
-                    fallback = R.drawable.ic_person
-                )
-            ),
+            painter = painterResource(id = safePainterResource(savedImage, fallback = R.drawable.ic_person)),
             contentDescription = "Foto de perfil",
             modifier = Modifier
-                .size(120.dp)
+                .size(150.dp)
                 .clip(CircleShape)
-                .padding(16.dp)
+                .border(2.dp, Color.Gray, CircleShape)
+                .padding(8.dp)
         )
 
         // Nombre y correo
-        Text(
-            text = userName,
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(top = 8.dp)
-        )
-        Text(
-            text = userEmail,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray,
-            modifier = Modifier.padding(top = 4.dp)
-        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = userName,
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(top = 12.dp)
+            )
+            Text(
+                text = userEmail,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Estado del usuario
+        Text(
+            text = "Estado: En línea",
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.Green,
+            modifier = Modifier.padding(top = 4.dp)
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
         // Fila de selección de imágenes
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             items(profileImageOptions.size) { index ->
@@ -90,6 +102,34 @@ fun ProfileScreen(navController: NavController, userName: String = "Nombre de Us
                     onClick = { selectedImage = imageRes }
                 )
             }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Botón de guardar la imagen seleccionada
+        Button(
+            onClick = {
+                savedImage = selectedImage // Guardamos la imagen seleccionada
+            },
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth(0.7f)
+                .height(50.dp)
+        ) {
+            Text(text = "Guardar", style = MaterialTheme.typography.titleLarge)
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Botón de salir
+        Button(
+            onClick = {
+                // Cerrar la aplicación
+                Process.killProcess(Process.myPid()) // Esto cierra la aplicación
+            },
+            modifier = Modifier.fillMaxWidth(0.7f)
+        ) {
+            Text(text = "Salir", style = MaterialTheme.typography.titleLarge)
         }
     }
 }
@@ -102,73 +142,18 @@ fun ImageSelection(imageRes: Int, isSelected: Boolean, onClick: () -> Unit) {
         ),
         modifier = Modifier
             .clickable { onClick() }
-            .padding(4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .padding(4.dp)
+            .height(100.dp)
+            .width(100.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        shape = CircleShape
     ) {
         Image(
             painter = painterResource(id = imageRes),
             contentDescription = "Imagen seleccionada",
             modifier = Modifier
-                .size(80.dp)
+                .fillMaxSize()
                 .clip(CircleShape)
         )
-    }
-}
-
-@Composable
-fun EditProfileScreen(navController: NavController, userName: String, userEmail: String) {
-    var selectedImage by rememberSaveable { mutableStateOf(R.drawable.ic_person) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        // Imagen de perfil seleccionada
-        Image(
-            painter = painterResource(
-                id = safePainterResource(
-                    id = selectedImage,
-                    fallback = R.drawable.ic_person
-                )
-            ),
-            contentDescription = "Foto de perfil",
-            modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape)
-                .padding(16.dp)
-        )
-
-        // Nombre y correo
-        Text(
-            text = userName,
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(top = 8.dp)
-        )
-        Text(
-            text = userEmail,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray,
-            modifier = Modifier.padding(top = 4.dp)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Fila de selección de imágenes
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(profileImageOptions.size) { index ->
-                val imageRes = profileImageOptions[index]
-                ImageSelection(
-                    imageRes = imageRes,
-                    isSelected = selectedImage == imageRes,
-                    onClick = { selectedImage = imageRes }
-                )
-            }
-        }
     }
 }

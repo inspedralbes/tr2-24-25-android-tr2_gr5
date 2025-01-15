@@ -114,6 +114,9 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.0") // Versión estable agregada
     implementation ("androidx.compose.runtime:runtime-saveable:<versión>")
 
+    implementation ("androidx.compose.material3:material3:<version>")
+    implementation ("androidx.compose.ui:ui:<version>")
+
 
     // Room Database
     val room_version = "2.6.1"
