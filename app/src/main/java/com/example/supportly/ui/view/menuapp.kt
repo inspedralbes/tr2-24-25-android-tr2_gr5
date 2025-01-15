@@ -145,7 +145,7 @@ fun Menuapp(email: String, password: String) {
             ) { backStackEntry ->
                 val email = backStackEntry.arguments?.getString("email") ?: ""
                 val password = backStackEntry.arguments?.getString("password") ?: ""
-                ProfileScreen(email = email, password = password)
+                Config(email = email, password = password, navController)
             }
             composable("añadirPeticion") { MakeRequest() }
             composable("detalles/{id_peticio}") { backStackEntry ->

@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ProfileScreen(email: String, password: String) {
+fun CACA(email: String, password: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
