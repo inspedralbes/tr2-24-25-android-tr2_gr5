@@ -35,7 +35,7 @@ fun EsperaScreen(navController: NavController) {
     var navigateToLogin by remember { mutableStateOf(false) }
     var rejectionMessage by remember { mutableStateOf("") }
 
-    val wsUrl = "http://10.0.2.2:3000"
+    val wsUrl = "http://tr2g5.dam.inspedralbes.cat:23412"
 
     // WebSocket Listener
     val webSocketListener = remember {
