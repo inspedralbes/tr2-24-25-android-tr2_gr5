@@ -1,12 +1,13 @@
 package com.example.supportly.network
 
+import androidx.room.Query
 import com.example.supportly.model.Categoria
 import com.example.supportly.model.LoginRequest
 import com.example.supportly.model.LoginResponse
 import com.example.supportly.model.Curs
-import com.example.supportly.model.Message
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.model.Usuari
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -22,7 +23,7 @@ import retrofit2.http.Query
 
 object RetrofitInstance {
     private const val BASE_URL = "http://10.0.2.2:3000/"
-
+//http://tr2g5.dam.inspedralbes.cat:23412
 
     private val retrofit by lazy {
         Retrofit.Builder()
@@ -82,4 +83,10 @@ interface Mentoria {
     ): Response<List<Message>>
 
 
+
+    @GET("usuaris/{tipus}")
+    fun getUsuarisPorTipus(@Path("tipus") tipus: String): Call<List<Usuari>>
+
+    @GET("usuaris")
+    fun getUsuaris(): Call<List<Usuari>>
 }

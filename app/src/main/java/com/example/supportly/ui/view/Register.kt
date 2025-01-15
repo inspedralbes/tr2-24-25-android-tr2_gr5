@@ -92,24 +92,42 @@ fun CursoSelect(api: Mentoria, onCursoSelected: (Int) -> Unit) {
     }
 }
 
+
 fun sendMentorData(
     navController: NavController,
     nom: String,
     cognom: String,
     correu_alumne: String,
+    correu_tutor: String, // Corrección: añadido parámetro correu_tutor
     correu_profe: String,
     contrasenya: String,
     id_curs: Int,
-    val_tut_aula: Int
-
+    valid_tut_aula: Int,
+    tipus: String, // Corrección: añadido parámetro tipus
+    likes: Int,
+    peticionesAcabadas: Int
 ) {
-    val newMentor = Usuari(nom, cognom, correu_alumne, correu_profe, contrasenya, id_curs, val_tut_aula)
+    // Crear el objeto del nuevo mentor
+    val newMentor = Usuari(
+        nom = nom,
+        cognom = cognom,
+        correu_alumne = correu_alumne,
+        correu_tutor = correu_tutor,
+        correu_profe = correu_profe,
+        contrasenya = contrasenya,
+        id_curs = id_curs,
+        valid_tut_aula = valid_tut_aula,
+        tipus = tipus,
+        likes = likes,
+        peticionsAcabades = peticionesAcabadas
+    )
 
+    // Realizar la solicitud a la API para registrar el mentor
     api.registerMentor(newMentor).enqueue(object : Callback<ResponseBody> {
         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
             if (response.isSuccessful) {
                 Log.d("RegisterMentor", "Registro exitoso")
-                navController.navigate("espera")
+                navController.navigate("espera") // Navegar a la pantalla de espera
             } else {
                 Log.e("RegisterMentor", "Error en el registro: ${response.message()}")
             }
@@ -121,15 +139,24 @@ fun sendMentorData(
     })
 }
 
+
 @Composable
 fun RegisterMentor(navController: NavController) {
     var nom by remember { mutableStateOf("") }
     var cognom by remember { mutableStateOf("") }
     var correu_alumne by remember { mutableStateOf("") }
     var correu_profe by remember { mutableStateOf("") }
+    var correu_tutor by remember { mutableStateOf("") }  // Agregado el campo para el correo del tutor
     var contrasenya by remember { mutableStateOf("") }
     var contrasenyaVisible by remember { mutableStateOf(false) }
-    var id_curs by remember { mutableStateOf(0) } //
+    var id_curs by remember { mutableStateOf(0) }
+    var tipus by remember { mutableStateOf("ment") } // Tipo de usuario
+    var likes by remember { mutableStateOf(0) }
+    var peticionesAcabadas by remember { mutableStateOf(0) }
+
+    // Menú desplegable para seleccionar el tipo de usuario
+    var expandedTipus by remember { mutableStateOf(false) }
+    val tipusList = listOf("ment", "alum", "prof")
 
     Column(
         modifier = Modifier
@@ -183,6 +210,14 @@ fun RegisterMentor(navController: NavController) {
                 .padding(vertical = 10.dp)
         )
         TextField(
+            value = correu_tutor,  // Agregado el campo para el correo del tutor
+            onValueChange = { correu_tutor = it },
+            label = { Text("Correo Tutor") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp)
+        )
+        TextField(
             value = contrasenya,
             onValueChange = { contrasenya = it },
             label = { Text("Contraseña") },
@@ -203,19 +238,52 @@ fun RegisterMentor(navController: NavController) {
             id_curs = selectedId as Int // Asignamos el ID del curso seleccionado
         }
 
+        // Menú desplegable para seleccionar el tipo de usuario
+        TextField(
+            value = tipus,
+            onValueChange = {},
+            label = { Text("Tipo de Usuario") },
+            readOnly = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expandedTipus = !expandedTipus }
+                .padding(vertical = 10.dp)
+        )
+
+        DropdownMenu(
+            expanded = expandedTipus,
+            onDismissRequest = { expandedTipus = false }
+        ) {
+            tipusList.forEach { type ->
+                DropdownMenuItem(
+                    onClick = {
+                        tipus = type
+                        expandedTipus = false
+                    }
+                ) {
+                    Text(text = type.capitalize())
+                }
+            }
+        }
+
         Button(
             onClick = {
                 if (id_curs != 0 && nom.isNotEmpty() && cognom.isNotEmpty() &&
-                    correu_alumne.isNotEmpty() && correu_profe.isNotEmpty() && contrasenya.isNotEmpty()) {
+                    correu_alumne.isNotEmpty() && correu_profe.isNotEmpty() &&
+                    correu_tutor.isNotEmpty() && contrasenya.isNotEmpty()) {
                     sendMentorData(
                         navController,
                         nom,
                         cognom,
                         correu_alumne,
                         correu_profe,
+                        correu_tutor,  // Ahora se envía el correo del tutor
                         contrasenya,
                         id_curs,
-                        val_tut_aula = Int.MAX_VALUE
+                        valid_tut_aula = Int.MAX_VALUE,  // Puedes ajustar este valor según lo necesario
+                        tipus = tipus ,// Se envía el tipo seleccionado
+                        likes = likes,
+                        peticionesAcabadas = peticionesAcabadas
                     )
                     navController.navigate("espera")
                 } else {
@@ -228,6 +296,8 @@ fun RegisterMentor(navController: NavController) {
         }
     }
 }
+
+
 
 
 //HACER EL FORMULARIO DE REGISTRO DE ALUMNE

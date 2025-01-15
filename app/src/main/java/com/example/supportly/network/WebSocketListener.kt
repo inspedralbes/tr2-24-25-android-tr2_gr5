@@ -18,7 +18,7 @@ class MyWebSocketListener(
     init {
         // Inicializar el socket
         try {
-            mSocket = IO.socket("http://10.0.2.2:3000")
+            mSocket = IO.socket("//http://tr2g5.dam.inspedralbes.cat:23412")
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e("SocketIO", "Failed to connect to socket", e)

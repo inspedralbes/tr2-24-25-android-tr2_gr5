@@ -50,6 +50,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavType
+import androidx.navigation.compose.*
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -96,7 +99,7 @@ fun Menuapp(email: String, password: String) {
                                 painter = painterResource(id = R.drawable.logo),
                                 contentDescription = "Logo",
                                 modifier = Modifier
-                                    .size(150.dp)
+                                    .size(120.dp)
                                     .padding(vertical = 8.dp)
                             )
                         }
@@ -120,8 +123,13 @@ fun Menuapp(email: String, password: String) {
                 backgroundColor = Color.White,
                 contentColor = DeepNavy
             ) {
-                val items = listOf("Peticions", "Valoracions", "Perfil")
-                val icons = listOf(Icons.Filled.Menu, Icons.Filled.Star, Icons.Filled.AccountCircle)
+                val items = listOf("Peticions", "Usuarios", "Perfil")
+                val icons = listOf(
+                    Icons.Filled.Menu,
+                    Icons.Filled.Star,
+                    Icons.Filled.AccountCircle,
+                    Icons.Filled.AccountCircle // Cambiar el ícono si lo deseas
+                )
 
                 items.forEachIndexed { index, item ->
                     BottomNavigationItem(
@@ -137,12 +145,15 @@ fun Menuapp(email: String, password: String) {
                             selectedItem = index
                             when (index) {
                                 0 -> navController.navigate("pantallaInicio")
-                                1 -> navController.navigate("estadistiques")
-                                2 -> navController.navigate("perfil")
+                                1 -> navController.navigate("usuarios") // Nueva pantalla
+                                2 -> {
+                                    // Navegar a perfil con los parámetros
+                                    navController.navigate("perfil/$email/$password")
+                                }
                             }
                         },
-                        selectedContentColor = Color.Blue,
-                        unselectedContentColor = Color.Gray
+                        selectedContentColor = Color(0xFF2196F3), // Azul
+                        unselectedContentColor = Color(0xFF9E9E9E) // Gris
                     )
                 }
             }
@@ -204,7 +215,6 @@ fun Menuapp(email: String, password: String) {
                 if (idPeticio != null) {
                     DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Pasar el ID del usuario actual
                 } else {
-
                     Text("Petición no encontrada")
                 }
             }
@@ -299,6 +309,7 @@ fun UserItemWithIcon(user: Usuari, navController: NavController, email: String, 
         }
     }
 }
+
 
 
 @Composable

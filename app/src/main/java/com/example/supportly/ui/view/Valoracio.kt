@@ -1,4 +1,3 @@
-// Valoracio.kt
 package com.example.supportly.ui.view
 
 import androidx.compose.foundation.background
@@ -17,18 +16,20 @@ import com.example.supportly.R
 
 @Composable
 fun ValoracioScreen(onSubmit: () -> Unit = {}) {
-    // Lista de mentores con sus estrellas seleccionadas
-    val mentors = remember { mutableStateListOf(0, 0, 0, 0, 0, 0) } // 6 mentores, 0 estrellas seleccionadas para cada uno
+    // Valoración para un solo mentor
+    var selectedStars by remember { mutableStateOf(0.0) } // 0 estrellas seleccionadas por defecto
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally, // Centra el contenido horizontalmente
+        verticalArrangement = Arrangement.Top // Coloca el contenido en la parte superior
     ) {
-        // Título
+        // Título en la parte superior
         Text(
-            text = "VALORACIONES DE MENTOR",
+            text = "VALORACIÓN DEL MENTOR",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -37,62 +38,81 @@ fun ValoracioScreen(onSubmit: () -> Unit = {}) {
                 .padding(vertical = 16.dp)
         )
 
-        // Lista de mentores con valoraciones
-        Column(modifier = Modifier.fillMaxWidth()) {
-            mentors.forEachIndexed { index, selectedStars ->
-                MentorRatingItem(
-                    selectedStars = selectedStars,
-                    onStarSelected = { starIndex ->
-                        mentors[index] = starIndex // Actualizar las estrellas para este mentor
-                    }
+        // Espaciador entre el título y el contenido central
+        Spacer(modifier = Modifier.height(1.dp)) // Esto crea el espacio hacia el centro de la pantalla
+
+        // Contenedor para el icono de perfil, estrellas y botón, centrado
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // Icono del mentor (centrado y más grande)
+            Icon(
+                painter = painterResource(id = R.drawable.ic_person), // Reemplaza con tu recurso de ícono
+                contentDescription = "Mentor",
+                modifier = Modifier.size(120.dp)  // Tamaño grande para el icono
+            )
+
+            // Espaciador entre el icono y las estrellas
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Mentor con valoraciones
+            MentorRatingItem(
+                selectedStars = selectedStars,
+                onStarSelected = { starIndex ->
+                    selectedStars = starIndex
+                }
+            )
+
+            // Espaciador entre las estrellas y el botón
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón de "Enviar"
+            Button(
+                onClick = { onSubmit() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
+            ) {
+                Text(
+                    text = "Enviar",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
                 )
             }
-        }
-
-        Spacer(modifier = Modifier.weight(1f)) // Espaciador flexible
-
-        // Botón de "Enviar"
-        Button(
-            onClick = { onSubmit() },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
-        ) {
-            Text(
-                text = "Enviar",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
         }
     }
 }
 
 @Composable
-fun MentorRatingItem(selectedStars: Int, onStarSelected: (Int) -> Unit) {
+fun MentorRatingItem(selectedStars: Double, onStarSelected: (Double) -> Unit) {
     Row(
+        horizontalArrangement = Arrangement.Center, // Centra las estrellas horizontalmente
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        // Icono del mentor (se aumenta el tamaño)
-        Icon(
-            painter = painterResource(id = R.drawable.ic_person),
-            contentDescription = "Mentor",
-            modifier = Modifier
-                .size(72.dp)  // Tamaño aumentado de 48.dp a 72.dp
-                .padding(end = 16.dp)
-        )
-
         // Estrellas para la calificación
         Row {
             repeat(5) { index -> // 5 estrellas disponibles
+                val starValue = index + 1
+                val isSelected = selectedStars >= starValue
+                val isHalfSelected = selectedStars >= starValue - 0.5 && selectedStars < starValue
+
                 StarIconButton(
-                    starIndex = index + 1,
-                    isSelected = selectedStars >= index + 1,
-                    onClick = { onStarSelected(index + 1) }
+                    starIndex = starValue,
+                    isSelected = isSelected,
+                    isHalfSelected = isHalfSelected,
+                    onClick = {
+
+
+                        onStarSelected(if (isHalfSelected) (starValue - 0.100) else starValue.toDouble())
+                    },
+                    onDoubleClick = { onStarSelected(starValue.toDouble()) } // Detectamos el doble clic
                 )
             }
         }
@@ -100,18 +120,32 @@ fun MentorRatingItem(selectedStars: Int, onStarSelected: (Int) -> Unit) {
 }
 
 @Composable
-fun StarIconButton(starIndex: Int, isSelected: Boolean, onClick: () -> Unit) {
+fun StarIconButton(starIndex: Int, isSelected: Boolean, isHalfSelected: Boolean, onClick: () -> Unit, onDoubleClick: () -> Unit) {
+    var lastClickTime by remember { mutableStateOf(0L) }
+
     IconButton(
-        onClick = onClick,
+        onClick = {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime < 300) {
+                onDoubleClick() // Si el tiempo entre clics es menor que 300 ms, se considera un doble clic
+            } else {
+                onClick() // Si no es doble clic, es un clic normal
+            }
+            lastClickTime = currentTime
+        },
         modifier = Modifier.padding(4.dp)
     ) {
+        val icon = when {
+            isSelected -> R.drawable.ic_star
+            isHalfSelected -> R.drawable.ic_star_half
+            else -> R.drawable.starblack
+        }
+
         Icon(
-            painter = painterResource(
-                id = if (isSelected) R.drawable.ic_star else R.drawable.starblack
-            ),
+            painter = painterResource(id = icon),
             contentDescription = "Estrella $starIndex",
             modifier = Modifier.size(32.dp),
-            tint = if (isSelected) Color.Yellow else Color.Gray
+            tint = if (isSelected || isHalfSelected) Color.Yellow else Color.Gray
         )
     }
 }

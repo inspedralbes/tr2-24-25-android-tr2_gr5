@@ -2,7 +2,9 @@ package com.example.supportly.ui.view.Navegation
 
 import DetailsScreen
 import android.util.Log
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,6 +23,8 @@ import com.example.supportly.model.Usuari
 import com.example.supportly.ui.view.ChatsScreen
 import com.example.supportly.ui.view.EsperaScreen
 import com.example.supportly.ui.view.UserChatScreen
+import androidx.navigation.navArgument
+import com.example.supportly.ui.view.*
 
 @Composable
 fun AppNavigation() {
@@ -74,22 +78,22 @@ fun AppNavigation() {
         }
 
         composable("espera") {
-            EsperaScreen(navController)
+            EsperaScreen(navController = navController)
         }
 
+        // Ruta para estadísticas
         composable("estadistiques") {
             ValoracioScreen()
         }
 
+        // Nueva ruta para detalles de una petición
         composable("detalles/{id_peticio}") { backStackEntry ->
             val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
             val currentUserId = 2;
             if (idPeticio != null) {
-                DetailsScreen(
-                    peticionId = idPeticio,
-                    currentUserId = currentUserId
-                ) // Llamar a DetailsScreen con el id_peticio
+                DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Llamar a DetailsScreen con el id_peticio
             } else {
+                // En caso de que el id no sea válido, muestra un mensaje de error
                 Text("Petición no encontrada")
             }
         }
@@ -122,4 +126,3 @@ fun AppNavigation() {
         }
     }
 }
-

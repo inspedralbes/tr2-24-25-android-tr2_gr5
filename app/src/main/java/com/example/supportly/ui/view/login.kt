@@ -2,11 +2,13 @@ package com.example.supportly.ui.view
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -24,13 +26,17 @@ import com.example.supportly.network.RetrofitInstance
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.compose.foundation.background
+
 
 @Composable
 fun Login(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var tipus by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
+    // Obtener el contexto actual para el Toast
     val context = LocalContext.current
 
     Column(
@@ -43,7 +49,11 @@ fun Login(navController: NavController) {
         Text(
             modifier = Modifier.padding(50.dp),
             text = "Inicio de Sesión",
-            style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Light)
+            style = TextStyle(
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Light,
+                color = Color(0xFF004F92) // Azul oscuro para el título
+            )
         )
 
         Spacer(modifier = Modifier.height(60.dp))
@@ -57,6 +67,8 @@ fun Login(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
+                .background(Color(0xFFF3F8FF)) // Fondo azul claro para los campos
+                .clip(RoundedCornerShape(16.dp)) // Bordes redondeados
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -77,6 +89,8 @@ fun Login(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
+                .background(Color(0xFFF3F8FF)) // Fondo azul claro
+                .clip(RoundedCornerShape(16.dp)) // Bordes redondeados
         )
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -111,13 +125,18 @@ fun Login(navController: NavController) {
                     }
                 })
             },
-            colors = ButtonDefaults.buttonColors(Color.Blue),
+            colors = ButtonDefaults.buttonColors(Color(0xFF007BFF)), // Botón azul vibrante
             modifier = Modifier
                 .fillMaxWidth(0.8f)
                 .padding(top = 16.dp)
+                .clip(RoundedCornerShape(16.dp)) // Bordes redondeados en el botón
         ) {
-            Text(text = "Iniciar sesión")
+            Text(
+                text = "Iniciar sesión",
+                color = Color.White, // Texto blanco en el botón
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
-
