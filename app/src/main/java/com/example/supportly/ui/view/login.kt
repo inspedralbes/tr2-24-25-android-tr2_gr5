@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.supportly.model.LoginRequest
 import com.example.supportly.model.LoginResponse
@@ -28,10 +29,8 @@ import retrofit2.Response
 fun Login(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var tipus by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    // Obtener el contexto actual para el Toast
     val context = LocalContext.current
 
     Column(
@@ -96,7 +95,9 @@ fun Login(navController: NavController) {
                         if (response.isSuccessful) {
                             val loginResponse = response.body()
                             if (loginResponse?.user != null) {
-                                navController.navigate("menuapp")
+
+                                // Navegar a UserChat sin pasar el email por parámetro
+                                navController.navigate("menuapp/$email/$password")
                             } else {
                                 Toast.makeText(context, "Error: ${loginResponse?.message}", Toast.LENGTH_LONG).show()
                             }
@@ -119,3 +120,4 @@ fun Login(navController: NavController) {
         }
     }
 }
+

@@ -5,39 +5,63 @@ import DetailsScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.FabPosition
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.TextField
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.unit.dp
-import com.example.supportly.ui.theme.DeepNavy
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.*
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.supportly.R
 import com.example.supportly.model.Categoria
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.model.Usuari
 import com.example.supportly.network.RetrofitInstance.api
 import com.example.supportly.ui.theme.AquaMist
+import com.example.supportly.ui.theme.DeepNavy
 import com.example.supportly.ui.theme.MintCream
 import com.example.supportly.ui.theme.SkyBlue
 import kotlinx.coroutines.Dispatchers
@@ -124,7 +148,7 @@ fun Menuapp() {
             }
         },
         floatingActionButton = {
-            if (currentBackStackEntry.value?.destination?.route != "tusmuertos") {
+            if (currentBackStackEntry.value?.destination?.route != "userchat/{correu_alumne}/{nom}") {
                 FloatingActionButton(
                     onClick = {
                         navController.navigate("añadirPeticion") // Navegar a la nueva pantalla
@@ -150,8 +174,17 @@ fun Menuapp() {
             composable("chatsScreen") { backStackEntry ->
                ChatsScreen(sender = String.toString(), navController = navController)
             }
-            composable("tusmuertos") {
-                TusMuertosScreen()
+            composable(
+                route = "userchat/{correu_alumne}/{nom}",
+                arguments = listOf(
+                    navArgument("correu_alumne") { type = NavType.StringType },
+                    navArgument("nom") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val correuAlumne = backStackEntry.arguments?.getString("correu_alumne")
+                val nom = backStackEntry.arguments?.getString("nom")
+
+                UserChatScreen(correuAlumne = correuAlumne, nom = nom)
             }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
@@ -172,6 +205,7 @@ fun ChatsScreen(sender: String, navController: NavController) {
     var messageText by remember { mutableStateOf("") }
     var searchQuery by remember { mutableStateOf("") }
     var users by remember { mutableStateOf<List<Usuari>>(emptyList()) }
+
 
     LaunchedEffect(Unit) {
         api.usuaris().enqueue(object : Callback<List<Usuari>> {
@@ -226,36 +260,25 @@ fun ChatsScreen(sender: String, navController: NavController) {
                 singleLine = true
             )
         }
-
-        // Botón para navegar a la pantalla de chat con una persona
-        Button(
-            onClick = {
-                // Navegar a la pantalla de chat con una persona específica
-                navController.navigate("tusmuertos") // Ajusta "chat_screen" con el destino deseado
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
-        ) {
-            androidx.compose.material.Text("Ir a chat con usuario")
-        }
-
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(filteredUsers) { user ->
-                UserItemWithIcon(user = user)
+                UserItemWithIcon(user = user, navController = navController)
             }
         }
     }
 }
 
 @Composable
-fun UserItemWithIcon(user: Usuari) {
+fun UserItemWithIcon(user: Usuari, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .border(1.dp, androidx.compose.material.MaterialTheme.colors.onSurface)
             .padding(16.dp)
+            .clickable {
+                navController.navigate("userchat/${user.correu_alumne}/${user.nom}")
+            }
     ) {
         Column(
             modifier = Modifier.weight(1f)

@@ -14,12 +14,13 @@ import com.example.supportly.ui.view.TipusRegister
 import com.example.supportly.ui.view.Menuapp
 import com.example.supportly.ui.view.ValoracioScreen
 import androidx.compose.material.Text
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.supportly.model.Usuari
 import com.example.supportly.ui.view.ChatsScreen
 import com.example.supportly.ui.view.EsperaScreen
-import com.example.supportly.ui.view.TusMuertosScreen
+import com.example.supportly.ui.view.UserChatScreen
 
 @Composable
 fun AppNavigation() {
@@ -87,8 +88,17 @@ fun AppNavigation() {
         composable("chats_screen") {
             ChatsScreen(sender = "user", navController = navController)
         }
-        composable("tusmuertos") {
-            TusMuertosScreen()
+        composable(
+            route = "userchat/{correu_alumne}/{nom}",
+            arguments = listOf(
+                navArgument("correu_alumne") { type = NavType.StringType },
+                navArgument("nom") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val correuAlumne = backStackEntry.arguments?.getString("correu_alumne")
+            val nom = backStackEntry.arguments?.getString("nom")
+
+            UserChatScreen(correuAlumne = correuAlumne, nom = nom)
         }
     }
 }
