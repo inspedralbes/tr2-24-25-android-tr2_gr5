@@ -83,8 +83,7 @@ interface Mentoria {
     ): Response<List<Message>>
 
 
-
-    @GET("usuaris/{tipus}")
+    @GET("usuarisM/{tipus}")
     fun getUsuarisPorTipus(@Path("tipus") tipus: String): Call<List<Usuari>>
 
     @GET("usuaris")
