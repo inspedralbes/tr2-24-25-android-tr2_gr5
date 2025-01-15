@@ -2,6 +2,7 @@
 package com.example.supportly.ui.view
 
 import DetailsScreen
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.FabPosition
@@ -72,7 +72,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun Menuapp() {
+fun Menuapp(email: String, password: String) {
     val navController = rememberNavController()
     var selectedItem by remember { mutableStateOf(0) }
     val sender = "usuarioActual"
@@ -105,7 +105,7 @@ fun Menuapp() {
                 actions = {
                     IconButton(onClick = {
 
-                        navController.navigate("chatsScreen")
+                        navController.navigate("chatscreen/${email}/${password}")
                     }) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.Chat, contentDescription = "Chat Icon")
                     }
@@ -148,10 +148,10 @@ fun Menuapp() {
             }
         },
         floatingActionButton = {
-            if (currentBackStackEntry.value?.destination?.route != "userchat/{correu_alumne}/{nom}") {
+            if (currentBackStackEntry.value?.destination?.route != "userchat/{correu_alumne}/{nom}/{email}/{password}") {
                 FloatingActionButton(
                     onClick = {
-                        navController.navigate("añadirPeticion") // Navegar a la nueva pantalla
+                        navController.navigate("añadirPeticion")
                     },
                     backgroundColor = AquaMist,
                     contentColor = Color.White
@@ -171,20 +171,32 @@ fun Menuapp() {
             composable("estadistiques") { ValoracioScreen() }
             composable("perfil") {}
             composable("añadirPeticion") { MakeRequest() } // Define la nueva pantalla aquí
-            composable("chatsScreen") { backStackEntry ->
-               ChatsScreen(sender = String.toString(), navController = navController)
+            composable(
+                "chatscreen/{email}/{password}",
+                arguments = listOf(
+                    navArgument("email") { type = NavType.StringType },
+                    navArgument("password") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val email = backStackEntry.arguments?.getString("email") ?: ""
+                val password = backStackEntry.arguments?.getString("password") ?: ""
+                ChatsScreen(sender = "user", navController = navController, email = email, password = password)
             }
             composable(
-                route = "userchat/{correu_alumne}/{nom}",
+                route = "userchat/{correu_alumne}/{nom}/{email}/{password}",
                 arguments = listOf(
                     navArgument("correu_alumne") { type = NavType.StringType },
-                    navArgument("nom") { type = NavType.StringType }
+                    navArgument("nom") { type = NavType.StringType },
+                    navArgument("email") { type = NavType.StringType },
+                    navArgument("password") { type = NavType.StringType }
                 )
             ) { backStackEntry ->
                 val correuAlumne = backStackEntry.arguments?.getString("correu_alumne")
                 val nom = backStackEntry.arguments?.getString("nom")
+                val email = backStackEntry.arguments?.getString("email") ?: ""
+                val password = backStackEntry.arguments?.getString("password") ?: ""
 
-                UserChatScreen(correuAlumne = correuAlumne, nom = nom)
+                UserChatScreen(correuAlumne = correuAlumne, nom = nom, email = email, password = password)
             }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
@@ -201,12 +213,11 @@ fun Menuapp() {
 }
 
 @Composable
-fun ChatsScreen(sender: String, navController: NavController) {
+fun ChatsScreen(sender: String, navController: NavController, email: String, password: String) {
     var messageText by remember { mutableStateOf("") }
     var searchQuery by remember { mutableStateOf("") }
     var users by remember { mutableStateOf<List<Usuari>>(emptyList()) }
-
-
+    println(email)
     LaunchedEffect(Unit) {
         api.usuaris().enqueue(object : Callback<List<Usuari>> {
             override fun onResponse(
@@ -262,14 +273,14 @@ fun ChatsScreen(sender: String, navController: NavController) {
         }
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(filteredUsers) { user ->
-                UserItemWithIcon(user = user, navController = navController)
+                UserItemWithIcon(user = user, navController = navController, email, password)
             }
         }
     }
 }
 
 @Composable
-fun UserItemWithIcon(user: Usuari, navController: NavController) {
+fun UserItemWithIcon(user: Usuari, navController: NavController, email: String, password: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -277,7 +288,7 @@ fun UserItemWithIcon(user: Usuari, navController: NavController) {
             .border(1.dp, androidx.compose.material.MaterialTheme.colors.onSurface)
             .padding(16.dp)
             .clickable {
-                navController.navigate("userchat/${user.correu_alumne}/${user.nom}")
+                navController.navigate("userchat/${user.correu_alumne}/${user.nom}/${email}/${password}")
             }
     ) {
         Column(

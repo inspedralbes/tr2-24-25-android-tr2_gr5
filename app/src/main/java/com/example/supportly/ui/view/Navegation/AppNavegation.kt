@@ -61,8 +61,16 @@ fun AppNavigation() {
             RegisterAlumne(navController = navController)
         }
 
-        composable("menuapp") {
-            Menuapp()
+        composable(
+            "menuapp/{email}/{password}",
+            arguments = listOf(
+                navArgument("email") { type = NavType.StringType },
+                navArgument("password") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            val password = backStackEntry.arguments?.getString("password") ?: ""
+            Menuapp(email = email, password = password)
         }
 
         composable("espera") {
@@ -85,20 +93,32 @@ fun AppNavigation() {
                 Text("Petición no encontrada")
             }
         }
-        composable("chats_screen") {
-            ChatsScreen(sender = "user", navController = navController)
+        composable(
+            "chatscreen/{email}/{password}",
+            arguments = listOf(
+                navArgument("email") { type = NavType.StringType },
+                navArgument("password") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            val password = backStackEntry.arguments?.getString("password") ?: ""
+            ChatsScreen(sender = "user", navController = navController, email = email, password = password)
         }
         composable(
-            route = "userchat/{correu_alumne}/{nom}",
+            route = "userchat/{correu_alumne}/{nom}/{email}/{password}",
             arguments = listOf(
                 navArgument("correu_alumne") { type = NavType.StringType },
-                navArgument("nom") { type = NavType.StringType }
+                navArgument("nom") { type = NavType.StringType },
+                navArgument("email") { type = NavType.StringType },
+                navArgument("password") { type = NavType.StringType }
             )
         ) { backStackEntry ->
             val correuAlumne = backStackEntry.arguments?.getString("correu_alumne")
             val nom = backStackEntry.arguments?.getString("nom")
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            val password = backStackEntry.arguments?.getString("password") ?: ""
 
-            UserChatScreen(correuAlumne = correuAlumne, nom = nom)
+            UserChatScreen(correuAlumne = correuAlumne, nom = nom, email = email, password = password)
         }
     }
 }
