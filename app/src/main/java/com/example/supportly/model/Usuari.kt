@@ -14,4 +14,3 @@ data class Usuari(
     val likes: Int,
     val peticionsAcabades: Int
 )
-

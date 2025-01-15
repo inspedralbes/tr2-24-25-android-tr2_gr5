@@ -193,6 +193,17 @@ fun Menuapp(email: String, password: String) {
                 ChatsScreen(sender = "user", navController = navController, email = email, password = password)
             }
             composable(
+                "perfil/{email}/{password}",
+                arguments = listOf(
+                    navArgument("email") { type = NavType.StringType },
+                    navArgument("password") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val email = backStackEntry.arguments?.getString("email") ?: ""
+                val password = backStackEntry.arguments?.getString("password") ?: ""
+                Config(email = email, password = password, navController)
+            }
+            composable(
                 route = "userchat/{correu_alumne}/{nom}/{email}/{password}",
                 arguments = listOf(
                     navArgument("correu_alumne") { type = NavType.StringType },
@@ -208,6 +219,7 @@ fun Menuapp(email: String, password: String) {
 
                 UserChatScreen(correuAlumne = correuAlumne, nom = nom, email = email, password = password)
             }
+            composable("añadirPeticion") { MakeRequest() }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
                 val currentUserId = 2;
@@ -322,6 +334,7 @@ fun MenuScreen(navController: NavController) {
 
     LaunchedEffect(key1 = Unit) {
         try {
+            // Cargar peticiones y categorías simultáneamente
             val peticions: List<PeticioResponse> = withContext(Dispatchers.IO) {
                 api.peticion().execute().body() ?: emptyList()
             }

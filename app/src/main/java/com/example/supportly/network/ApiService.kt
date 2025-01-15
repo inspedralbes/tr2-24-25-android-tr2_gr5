@@ -89,4 +89,7 @@ interface Mentoria {
 
     @GET("usuaris")
     fun getUsuaris(): Call<List<Usuari>>
+
+    @GET("usuaris/{correu_alumne}")
+    fun getUsuariPorCorreu(@Path("correu_alumne") correu_alumne: String): Call<Usuari>
 }
