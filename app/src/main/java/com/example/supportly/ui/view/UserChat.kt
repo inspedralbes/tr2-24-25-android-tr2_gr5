@@ -173,7 +173,6 @@ fun sendMessageToUser(
             )
             if (response.isSuccessful) {
                 val sentMessage = response.body()
-                println(sentMessage)
                 sentMessage?.let {
                     // Emitir el mensaje al servidor a través del WebSocket
                     val jsonMessage = JSONObject().apply {
