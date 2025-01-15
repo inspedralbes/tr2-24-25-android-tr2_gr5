@@ -27,7 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import com.example.supportly.R
 import com.example.supportly.model.Categoria
 import com.example.supportly.model.PeticioResponse
@@ -40,9 +42,9 @@ import kotlinx.coroutines.withContext
 import okio.IOException
 
 @Composable
-fun Menuapp() {
+fun Menuapp(email: String, password: String) {
     val navController = rememberNavController()
-    var selectedItem by remember { mutableStateOf(0) }
+    var selectedItem by remember { mutableIntStateOf(0) }
 
     Scaffold(
         topBar = {
@@ -82,7 +84,8 @@ fun Menuapp() {
                 val icons = listOf(
                     Icons.Filled.Menu,
                     Icons.Filled.Star,
-                    Icons.Filled.AccountCircle
+                    Icons.Filled.AccountCircle,
+                    Icons.Filled.AccountCircle // Cambiar el ícono si lo deseas
                 )
 
                 items.forEachIndexed { index, item ->
@@ -99,12 +102,15 @@ fun Menuapp() {
                             selectedItem = index
                             when (index) {
                                 0 -> navController.navigate("pantallaInicio")
-                                1 -> navController.navigate("usuarios")
-                                2 -> navController.navigate("perfil")
+                                1 -> navController.navigate("usuarios") // Nueva pantalla
+                                2 -> {
+                                    // Navegar a perfil con los parámetros
+                                    navController.navigate("perfil/$email/$password")
+                                }
                             }
                         },
-                        selectedContentColor = Color.Blue,
-                        unselectedContentColor = Color.Gray
+                        selectedContentColor = Color(0xFF2196F3), // Azul
+                        unselectedContentColor = Color(0xFF9E9E9E) // Gris
                     )
                 }
             }
@@ -112,7 +118,7 @@ fun Menuapp() {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate("añadirPeticion")
+                    navController.navigate("añadirPeticion") // Navegar a la nueva pantalla
                 },
                 backgroundColor = AquaMist,
                 contentColor = Color.White
@@ -120,7 +126,7 @@ fun Menuapp() {
                 Icon(imageVector = Icons.Filled.Create, contentDescription = "Nuevo")
             }
         },
-        floatingActionButtonPosition = FabPosition.End
+        floatingActionButtonPosition = FabPosition.End // Ubicación del botón flotante
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -129,8 +135,18 @@ fun Menuapp() {
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
             composable("estadistiques") { ValoracioScreen() }
-            composable("usuarios") { UsersScreen() }
-            composable("perfil") { ProfileScreen(navController) }
+            composable("usuarios") { UsersScreen() } // Nueva pantalla de usuarios
+            composable(
+                "perfil/{email}/{password}",
+                arguments = listOf(
+                    navArgument("email") { type = NavType.StringType },
+                    navArgument("password") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val email = backStackEntry.arguments?.getString("email") ?: ""
+                val password = backStackEntry.arguments?.getString("password") ?: ""
+                ProfileScreen(email = email, password = password)
+            }
             composable("añadirPeticion") { MakeRequest() }
             composable("detalles/{id_peticio}") { backStackEntry ->
                 val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
@@ -145,17 +161,21 @@ fun Menuapp() {
     }
 }
 
+
+
+
 @Composable
 fun MenuScreen(navController: NavController) {
     var peticioResponseList: MutableList<PeticioResponse> by remember { mutableStateOf(mutableListOf()) }
     var categoriaList: MutableList<Categoria> by remember { mutableStateOf(mutableListOf()) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
-    var selectedCategory by remember { mutableStateOf<Int?>(null) }
-    var searchQuery by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf<Int?>(null) } // Almacena el id_categoria seleccionado
+    var searchQuery by remember { mutableStateOf("") } // Almacena el texto de búsqueda
 
     LaunchedEffect(key1 = Unit) {
         try {
+            // Cargar peticiones y categorías simultáneamente
             val peticions: List<PeticioResponse> = withContext(Dispatchers.IO) {
                 api.peticion().execute().body() ?: emptyList()
             }
@@ -185,6 +205,7 @@ fun MenuScreen(navController: NavController) {
         Text("Error: $error")
     } else {
         Column {
+            // Barra de búsqueda
             TextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
@@ -194,27 +215,31 @@ fun MenuScreen(navController: NavController) {
                     .padding(8.dp)
             )
 
+            // Mostrar filtro dinámico basado en las categorías
             CategoryFilter(
                 categories = categoriaList,
                 selectedCategory = selectedCategory,
                 onCategorySelected = { selectedCategory = it }
             )
 
+            // Filtrar lista según la categoría y el texto de búsqueda
             val filteredList = peticioResponseList.filter { peticio ->
                 (selectedCategory == null || peticio.id_categoria == selectedCategory) &&
                         (searchQuery.isEmpty() || peticio.nom_peticio.contains(searchQuery, ignoreCase = true))
             }
 
+            // Mostrar la lista filtrada
             LazyColumn {
                 items(filteredList) { item ->
                     MenuItem(item) {
-                        navController.navigate("detalles/${item.id_peticio}")
+                        navController.navigate("detalles/${item.id_peticio}") // Usar el id_peticio
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun CategoryFilter(

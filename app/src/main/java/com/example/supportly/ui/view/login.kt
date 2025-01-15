@@ -107,7 +107,8 @@ fun Login(navController: NavController) {
                         if (response.isSuccessful) {
                             val loginResponse = response.body()
                             if (loginResponse?.user != null) {
-                                navController.navigate("menuapp")
+                                // Pasamos las credenciales como argumentos al "menuapp"
+                                navController.navigate("menuapp/$email/$password")
                             } else {
                                 Toast.makeText(context, "Error: ${loginResponse?.message}", Toast.LENGTH_LONG).show()
                             }
@@ -136,3 +137,4 @@ fun Login(navController: NavController) {
         }
     }
 }
+
