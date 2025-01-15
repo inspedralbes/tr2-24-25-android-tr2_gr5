@@ -49,7 +49,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
@@ -180,7 +179,7 @@ fun Menuapp(email: String, password: String) {
         ) {
             composable("pantallaInicio") { MenuScreen(navController) }
             composable("estadistiques") { ValoracioScreen() }
-            composable("perfil") {}
+            composable("usuarios") { UsersScreen() }
             composable("añadirPeticion") { MakeRequest() } // Define la nueva pantalla aquí
             composable(
                 "chatscreen/{email}/{password}",

@@ -1,10 +1,10 @@
 package com.example.supportly.network
 
-import androidx.room.Query
 import com.example.supportly.model.Categoria
 import com.example.supportly.model.LoginRequest
 import com.example.supportly.model.LoginResponse
 import com.example.supportly.model.Curs
+import com.example.supportly.model.Message
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.model.Usuari
 import okhttp3.OkHttpClient
