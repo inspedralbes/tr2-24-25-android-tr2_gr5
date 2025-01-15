@@ -1,12 +1,27 @@
 package com.example.supportly.ui.view.Navegation
 
 import DetailsScreen
+import android.util.Log
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.supportly.ui.view.Login
+import com.example.supportly.ui.view.MainPage
+import com.example.supportly.ui.view.RegisterAlumne
+import com.example.supportly.ui.view.RegisterMentor
+import com.example.supportly.ui.view.TipusRegister
+import com.example.supportly.ui.view.Menuapp
+import com.example.supportly.ui.view.ValoracioScreen
+import androidx.compose.material.Text
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.example.supportly.model.Usuari
+import com.example.supportly.ui.view.ChatsScreen
+import com.example.supportly.ui.view.EsperaScreen
+import com.example.supportly.ui.view.UserChatScreen
 import androidx.navigation.navArgument
 import com.example.supportly.ui.view.*
 
@@ -49,7 +64,6 @@ fun AppNavigation() {
             RegisterAlumne(navController = navController)
         }
 
-        // Ruta de 'menuapp' con argumentos
         composable(
             "menuapp/{email}/{password}",
             arguments = listOf(
@@ -71,21 +85,43 @@ fun AppNavigation() {
             ValoracioScreen()
         }
 
-        // Ruta para detalles de una petición
-        composable(
-            "detalles/{id_peticio}",
-            arguments = listOf(
-                navArgument("id_peticio") { type = NavType.IntType }
-            )
-        ) { backStackEntry ->
-            val idPeticio = backStackEntry.arguments?.getInt("id_peticio")
-            val currentUserId = 2 // Ejemplo de ID de usuario actual
+        // Nueva ruta para detalles de una petición
+        composable("detalles/{id_peticio}") { backStackEntry ->
+            val idPeticio = backStackEntry.arguments?.getString("id_peticio")?.toIntOrNull()
+            val currentUserId = 2;
             if (idPeticio != null) {
-                DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId)
+                DetailsScreen(peticionId = idPeticio, currentUserId = currentUserId) // Llamar a DetailsScreen con el id_peticio
             } else {
-                // En caso de que el ID no sea válido
+                // En caso de que el id no sea válido, muestra un mensaje de error
                 Text("Petición no encontrada")
             }
+        }
+        composable(
+            "chatscreen/{email}/{password}",
+            arguments = listOf(
+                navArgument("email") { type = NavType.StringType },
+                navArgument("password") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            val password = backStackEntry.arguments?.getString("password") ?: ""
+            ChatsScreen(sender = "user", navController = navController, email = email, password = password)
+        }
+        composable(
+            route = "userchat/{correu_alumne}/{nom}/{email}/{password}",
+            arguments = listOf(
+                navArgument("correu_alumne") { type = NavType.StringType },
+                navArgument("nom") { type = NavType.StringType },
+                navArgument("email") { type = NavType.StringType },
+                navArgument("password") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val correuAlumne = backStackEntry.arguments?.getString("correu_alumne")
+            val nom = backStackEntry.arguments?.getString("nom")
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            val password = backStackEntry.arguments?.getString("password") ?: ""
+
+            UserChatScreen(correuAlumne = correuAlumne, nom = nom, email = email, password = password)
         }
     }
 }

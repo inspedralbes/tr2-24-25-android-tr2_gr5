@@ -20,6 +20,7 @@ cronetEmbedded = "119.6045.31"
 carUiLib = "2.6.0"
 roomCommon = "2.6.1"
 animationCoreLint = "1.8.0-alpha07"
+runtimeLivedata = "1.7.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -52,6 +53,7 @@ car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = 
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 androidx-animation-core-lint = { group = "androidx.compose.animation", name = "animation-core-lint", version.ref = "animationCoreLint" }
 socket-io-client = { module = "io.socket:socket.io-client", version.ref = "socketIoClient" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

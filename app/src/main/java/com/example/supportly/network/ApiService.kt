@@ -1,10 +1,10 @@
 package com.example.supportly.network
 
-import androidx.room.Query
 import com.example.supportly.model.Categoria
 import com.example.supportly.model.LoginRequest
 import com.example.supportly.model.LoginResponse
 import com.example.supportly.model.Curs
+import com.example.supportly.model.Message
 import com.example.supportly.model.PeticioResponse
 import com.example.supportly.model.Usuari
 import okhttp3.OkHttpClient
@@ -17,7 +17,8 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
-import java.util.concurrent.TimeUnit
+import retrofit2.Response
+import retrofit2.http.Query
 
 
 object RetrofitInstance {
@@ -43,6 +44,12 @@ interface Mentoria {
     @GET("categoria")
     fun categoria(): Call<List<Categoria>>
 
+    @GET("usuaris/{nom}")
+    fun buscarUsuari(@Path("nom") nom: String): Call<Usuari>
+
+    @GET("usuaris")
+    fun usuaris(): Call<List<Usuari>>
+
     @POST("peticion")
     fun crearPeticion(@Body nuevaPeticion: PeticioResponse): Call<ResponseBody>
 
@@ -64,7 +71,20 @@ interface Mentoria {
     @GET("curs")
     fun curs(): Call<List<Curs>>
 
-    @GET("usuarisM/{tipus}")
+    // Función para enviar un mensaje
+    @POST("/api/send")
+    suspend fun sendMessage(@Body message: Message): Response<Message>
+
+    // En tu ApiService
+    @GET("/api/messages")
+    suspend fun getMessages(
+        @Query("user1") user1: String,
+        @Query("user2") user2: String
+    ): Response<List<Message>>
+
+
+
+    @GET("usuaris/{tipus}")
     fun getUsuarisPorTipus(@Path("tipus") tipus: String): Call<List<Usuari>>
 
     @GET("usuaris")
