@@ -1,8 +1,6 @@
 package com.example.supportly.network
 
 import android.util.Log
-import com.example.supportly.model.Message
-import com.example.supportly.network.RetrofitInstance.api
 import io.socket.client.IO
 import io.socket.client.Socket
 import okhttp3.WebSocketListener
@@ -18,7 +16,7 @@ class MyWebSocketListener(
     init {
         // Inicializar el socket
         try {
-            mSocket = IO.socket("http://tr2g5.dam.inspedralbes.cat:23412")
+            mSocket = IO.socket("http://10.0.2.2:3000/")
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e("SocketIO", "Failed to connect to socket", e)
