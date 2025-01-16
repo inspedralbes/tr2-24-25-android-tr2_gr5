@@ -22,7 +22,7 @@ import retrofit2.http.Query
 
 
 object RetrofitInstance {
-    private const val BASE_URL = "http://10.0.2.2:3000/"
+    private const val BASE_URL = "http://tr2g5.dam.inspedralbes.cat:23412/"
 //http://tr2g5.dam.inspedralbes.cat:23412
 
     private val retrofit by lazy {
